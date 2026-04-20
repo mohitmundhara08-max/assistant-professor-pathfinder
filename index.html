@@ -169,7 +169,7 @@ en:{
   ao:'✅ Can Apply Now',ac:'🔴 Applications Closed',as:'🔵 Coming Soon',
   expand:'▼ Tap for full details & subject-wise vacancies',official:'Official Portal ↗',
   noMatch:'No vacancies match. Try "All" or change geography.',
-  gen_txt:'Generating...',ai_wait:'⏳ Creating your plan...',ai_fail:'⚠ AI requires ANTHROPIC_API_KEY on Vercel.',
+  gen_txt:'Generating...',ai_wait:'⏳ Creating your plan...',ai_fail:'⚠ Could not generate plan right now. Please try again later.',
 },
 hi:{
   hdr:'सहायक <b>प्राध्यापक</b> पाथवे फाइंडर',lb:'English',
@@ -196,7 +196,7 @@ hi:{
   ao:'✅ अभी आवेदन करें',ac:'🔴 आवेदन बंद',as:'🔵 जल्द आ रहा है',
   expand:'▼ पूर्ण विवरण और विषयवार रिक्तियां देखें',official:'आधिकारिक पोर्टल ↗',
   noMatch:'कोई रिक्ति मेल नहीं खाती। "सभी" या भूगोल बदलें।',
-  gen_txt:'बना रहे हैं...',ai_wait:'⏳ आपकी योजना बना रहे हैं...',ai_fail:'⚠ AI के लिए Vercel पर ANTHROPIC_API_KEY चाहिए।',
+  gen_txt:'बना रहे हैं...',ai_wait:'⏳ आपकी योजना बना रहे हैं...',ai_fail:'⚠ अभी योजना नहीं बन सकी। कृपया बाद में पुनः प्रयास करें।',
 }};
 function t(k){return TX[L][k]||k}
 
@@ -376,11 +376,12 @@ async function gP(){
 Give: 1) TOP 3 vacancies to target now 2) 4-week action plan 3) 5 documents to keep ready 4) 3 websites to check weekly 5) One tip
 Under 250 words. Bullet points. Be specific.`;
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const res=await fetch('/api/plan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
     const data=await res.json();
-    const text=data.content?.map(i=>i.text||'').join('\n')||t('ai_fail');
+    if(data.error){throw new Error(data.error)}
+    const text=data.text||t('ai_fail');
     document.getElementById('aR').innerHTML=`<div class="ai-res">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`;
-  }catch(e){document.getElementById('aR').innerHTML=`<div class="ai-res">${t('ai_fail')}</div>`}
+  }catch(e){document.getElementById('aR').innerHTML=`<div class="ai-res">${t('ai_fail')}<br><small>${e.message||''}</small></div>`}
   btn.disabled=false;btn.textContent=t('ai3');
 }
 
