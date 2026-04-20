@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assistant Professor Pathway Finder</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8f7f4; --card: #fff; --accent: #e63462; --accent2: #1a1a2e;
+  --text: #1a1a2e; --text2: #5a5a7a; --border: #e8e6e1;
+  --green: #0d9f6e; --amber: #d97706; --red: #dc2626;
+  --grad1: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  --grad2: linear-gradient(135deg, #e63462 0%, #fe4a72 100%);
+  --shadow: 0 1px 3px rgba(26,26,46,0.06), 0 6px 16px rgba(26,26,46,0.04);
+  --shadow2: 0 4px 24px rgba(230,52,98,0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Outfit', 'Noto Sans Devanagari', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+.wrap { max-width: 960px; margin: 0 auto; padding: 0 16px 40px; }
+
+/* Header */
+.header { background: var(--grad1); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+.header-left { display: flex; align-items: center; gap: 16px; }
+.logo { height: 36px; }
+.header h1 { color: #fff; font-size: 17px; font-weight: 600; letter-spacing: -0.2px; }
+.header h1 span { color: var(--accent); }
+.lang-toggle { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 7px 14px; border-radius: 20px; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+.lang-toggle:hover { background: rgba(255,255,255,0.2); }
+
+/* Tabs */
+.tabs { display: flex; background: var(--card); border-bottom: 2px solid var(--border); border-radius: 12px 12px 0 0; margin-top: 24px; overflow: hidden; box-shadow: var(--shadow); }
+.tab { flex: 1; padding: 14px 8px; text-align: center; cursor: pointer; font-weight: 500; font-size: 13px; color: var(--text2); transition: all 0.25s; border-bottom: 3px solid transparent; }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); background: rgba(230,52,98,0.04); }
+.tab:hover:not(.active) { background: rgba(26,26,46,0.02); }
+
+/* Panels */
+.panel { display: none; background: var(--card); padding: 28px 24px; border-radius: 0 0 12px 12px; box-shadow: var(--shadow); }
+.panel.active { display: block; }
+
+/* Form */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.field { display: flex; flex-direction: column; }
+.field.full { grid-column: 1 / -1; }
+.field label { font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+.field select, .field input { padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-family: inherit; background: var(--bg); cursor: pointer; transition: border 0.2s; color: var(--text); }
+.field select:focus, .field input:focus { outline: none; border-color: var(--accent); }
+.btn-row { grid-column: 1 / -1; display: flex; gap: 10px; margin-top: 8px; }
+button { font-family: inherit; cursor: pointer; transition: all 0.2s; }
+.btn-primary { flex: 1; padding: 13px; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; background: var(--grad2); color: #fff; }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: var(--shadow2); }
+.btn-reset { padding: 13px 20px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-weight: 500; background: var(--card); color: var(--text2); }
+
+/* Modal */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26,26,46,0.5); z-index: 100; align-items: center; justify-content: center; }
+.modal-overlay.show { display: flex; }
+.modal { background: var(--card); border-radius: 16px; padding: 32px; width: 90%; max-width: 420px; box-shadow: 0 20px 60px rgba(26,26,46,0.3); }
+.modal h3 { font-size: 18px; margin-bottom: 4px; }
+.modal p { font-size: 13px; color: var(--text2); margin-bottom: 20px; }
+.modal .field { margin-bottom: 14px; }
+.modal .btn-row { margin-top: 16px; }
+.modal .btn-cancel { padding: 12px 20px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--card); color: var(--text2); font-size: 14px; }
+.error-msg { color: var(--red); font-size: 12px; margin-top: 3px; display: none; }
+
+/* Results */
+.results { margin-top: 20px; }
+.snapshot { background: linear-gradient(135deg, #fef2f6, #fff5f8); border-left: 4px solid var(--accent); padding: 16px; border-radius: 0 10px 10px 0; margin-bottom: 18px; font-size: 14px; line-height: 1.6; }
+.sec-title { font-size: 12px; font-weight: 700; color: var(--accent); margin: 22px 0 10px; text-transform: uppercase; letter-spacing: 0.8px; }
+.card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 10px; transition: box-shadow 0.2s; background: var(--card); }
+.card:hover { box-shadow: var(--shadow); }
+.card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+.card-name { font-weight: 700; font-size: 15px; }
+.card-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.badge { padding: 4px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; white-space: nowrap; }
+.badge.elig { background: #d1fae5; color: #065f46; }
+.badge.maybe { background: #fef3c7; color: #92400e; }
+.badge.not { background: #fee2e2; color: #991b1b; }
+.card-body { font-size: 13px; line-height: 1.55; color: var(--text); }
+.card-body strong { color: var(--accent2); }
+
+/* Benefits */
+.ben-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.ben { background: var(--bg); padding: 14px; border-radius: 8px; border-left: 3px solid var(--green); font-size: 13px; line-height: 1.5; }
+.ben strong { color: var(--green); display: block; margin-bottom: 2px; font-size: 12px; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); }
+th { background: var(--bg); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; }
+td a { color: var(--accent); text-decoration: none; font-weight: 600; }
+.highlight { background: #ecfdf5; padding: 14px; border-radius: 8px; border-left: 4px solid var(--green); margin: 14px 0; font-size: 13px; line-height: 1.6; }
+.disclaimer { margin-top: 18px; padding: 12px; background: #fef3c7; border-radius: 8px; font-size: 12px; color: #78350f; line-height: 1.5; }
+@media (max-width: 640px) {
+  .form-grid, .ben-grid { grid-template-columns: 1fr; }
+  .header { flex-wrap: wrap; gap: 10px; }
+  .header h1 { font-size: 14px; }
+  .panel { padding: 20px 16px; }
+  table { font-size: 11px; }
+  th, td { padding: 7px 5px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <img src="Logo_White.png" alt="Testbook Supercoaching" class="logo" onerror="this.style.display='none'">
+    <h1 id="mainTitle">Assistant <span>Professor</span> Pathway Finder</h1>
+  </div>
+  <button class="lang-toggle" onclick="toggleLang()" id="langBtn">हिंदी</button>
+</div>
+
+<div class="wrap">
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab(0)" id="tab0"></div>
+    <div class="tab" onclick="switchTab(1)" id="tab1"></div>
+    <div class="tab" onclick="switchTab(2)" id="tab2"></div>
+  </div>
+
+  <!-- TAB 0: Profile -->
+  <div class="panel active" id="panel0">
+    <div class="form-grid">
+      <div class="field"><label id="lbl_net"></label>
+        <select id="net"><option value=""></option>
+          <option value="ugc-ap" id="opt_ugcap"></option>
+          <option value="ugc-jrf" id="opt_ugcjrf"></option>
+          <option value="planning" id="opt_planning"></option>
+          <option value="appeared" id="opt_appeared"></option>
+        </select>
+      </div>
+      <div class="field"><label id="lbl_subject"></label>
+        <select id="subject"><option value=""></option></select>
+      </div>
+      <div class="field"><label id="lbl_cat"></label>
+        <select id="cat"><option value=""></option>
+          <option value="gen" id="opt_gen"></option>
+          <option value="obc" id="opt_obc"></option>
+          <option value="sc" id="opt_sc"></option>
+          <option value="st" id="opt_st"></option>
+          <option value="pwd" id="opt_pwd"></option>
+        </select>
+      </div>
+      <div class="field"><label id="lbl_marks"></label>
+        <select id="marks"><option value=""></option>
+          <option value="lt50" id="opt_lt50"></option>
+          <option value="50-55" id="opt_5055"></option>
+          <option value="gte55" id="opt_gte55"></option>
+        </select>
+      </div>
+      <div class="field"><label id="lbl_phd"></label>
+        <select id="phd"><option value=""></option>
+          <option value="none" id="opt_phdnone"></option>
+          <option value="ongoing" id="opt_phdongoing"></option>
+          <option value="awarded" id="opt_phdawarded"></option>
+        </select>
+      </div>
+      <div class="field"><label id="lbl_state"></label>
+        <select id="state"><option value=""></option></select>
+      </div>
+      <div class="field"><label id="lbl_geo"></label>
+        <select id="geo"><option value=""></option>
+          <option value="home" id="opt_home"></option>
+          <option value="multi" id="opt_multi"></option>
+          <option value="any" id="opt_any"></option>
+        </select>
+      </div>
+      <div class="field"><label id="lbl_inst"></label>
+        <select id="inst"><option value=""></option>
+          <option value="central" id="opt_central"></option>
+          <option value="state" id="opt_stateuni"></option>
+          <option value="anyinst" id="opt_anyinst"></option>
+        </select>
+      </div>
+      <div class="btn-row">
+        <button class="btn-reset" onclick="resetForm()" id="btnReset"></button>
+        <button class="btn-primary" onclick="showModal()" id="btnAnalyze"></button>
+      </div>
+    </div>
+    <div class="results" id="results"></div>
+  </div>
+
+  <!-- TAB 1: State SET -->
+  <div class="panel" id="panel1">
+    <p class="sec-title" id="setTitle"></p>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:14px;" id="setDesc"></p>
+    <div id="setList"></div>
+  </div>
+
+  <!-- TAB 2: Benefits -->
+  <div class="panel" id="panel2"></div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3 id="modalTitle"></h3>
+    <p id="modalDesc"></p>
+    <div class="field">
+      <label id="lbl_name"></label>
+      <input type="text" id="userName" maxlength="50">
+      <div class="error-msg" id="nameErr"></div>
+    </div>
+    <div class="field">
+      <label id="lbl_phone"></label>
+      <input type="tel" id="userPhone" maxlength="10" pattern="[0-9]*" inputmode="numeric">
+      <div class="error-msg" id="phoneErr"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-cancel" onclick="hideModal()" id="btnCancel"></button>
+      <button class="btn-primary" onclick="analyze()" id="btnSubmit"></button>
+    </div>
+  </div>
+</div>
+
+<script>
+let lang = 'en';
+const T = {
+  en: {
+    mainTitle: 'Assistant <span>Professor</span> Pathway Finder',
+    langBtn: 'हिंदी',
+    tab0: '1. My Profile', tab1: '2. State SET Explorer', tab2: '3. Why NET + SET?',
+    lbl_net: 'UGC NET Status', lbl_subject: 'Subject (UGC NET)', lbl_cat: 'Category',
+    lbl_marks: "Master's Marks", lbl_phd: 'PhD Status', lbl_state: 'Home State',
+    lbl_geo: 'Geography Preference', lbl_inst: 'Institution Type',
+    opt_ugcap: 'UGC NET — AP Qualified', opt_ugcjrf: 'UGC NET — JRF + AP',
+    opt_planning: 'Planning to appear', opt_appeared: 'Appeared, preparing again',
+    opt_gen: 'General / EWS', opt_obc: 'OBC-NCL', opt_sc: 'SC', opt_st: 'ST', opt_pwd: 'PwD',
+    opt_lt50: 'Below 50%', opt_5055: '50 – 54.99%', opt_gte55: '55% and above',
+    opt_phdnone: 'Not pursuing', opt_phdongoing: 'Ongoing', opt_phdawarded: 'Awarded (UGC compliant)',
+    opt_home: 'Only home state', opt_multi: 'Home + neighbouring states', opt_any: 'Anywhere in India',
+    opt_central: 'Central Universities', opt_stateuni: 'State Univ / Govt Colleges', opt_anyinst: 'Any (incl. private/aided)',
+    btnReset: 'Reset', btnAnalyze: 'Analyze My Pathway →',
+    modalTitle: 'Almost there!', modalDesc: 'Enter your details to get personalized results',
+    lbl_name: 'Full Name', lbl_phone: 'Phone Number (10 digits)',
+    btnCancel: 'Cancel', btnSubmit: 'Get My Results →',
+    nameErr: 'Please enter your full name', phoneErr: 'Please enter a valid 10-digit phone number',
+    fillAll: 'Please fill all fields to get accurate results.',
+    select: '-- Select --',
+    setTitle: 'Deep Dive: State Eligibility Tests (SET / SLET)',
+    setDesc: 'Every SET below is UGC-supervised and gives lifetime AP eligibility within that state/region. No upper age limit. Master\'s with 55% (50% reserved) is the common floor.',
+    profile: 'Profile', goal_research: 'research-focused', goal_teaching: 'teaching job', goal_balanced: 'balanced path',
+    netHolder: 'UGC NET holder', netJRF: 'UGC NET + JRF holder — premium eligibility',
+    netNotCleared: 'UGC NET not yet cleared', netAppeared: 'Appeared before, preparing again',
+    marksBlocker: "Master's marks below UGC floor",
+    marksBlockerDesc: "UGC requires 55% (50% for reserved) in Master's for AP posts. This is a hard rule. Consider improving marks or verifying your official percentage calculation.",
+    netPriority: 'UGC NET — Priority #1',
+    netPriorityDesc: 'You need UGC NET before applying to any AP post (unless you hold a UGC-compliant PhD). Target the next UGC NET cycle (Jun/Dec). Both papers are objective, no negative marking.',
+    netConfirmed: '✓ UGC NET Eligibility confirmed',
+    netConfirmedDesc: 'You can apply for AP posts in all central, state and deemed universities across India. No age limit for AP route. Next move: layer a state SET on top for domicile advantage.',
+    netAppDesc: 'You have exam experience — focus on weak areas and target the next cycle with a structured revision plan. Consider mock tests and previous year papers.',
+    phdExempt: '✓ PhD-based NET exemption',
+    phdExemptDesc: 'A UGC 2009/2016-compliant PhD makes you exempt from NET/SET for AP posts. Combined with NET, you are in the top eligibility bracket. Verify your compliance certificate.',
+    recSet: 'Your Recommended State SET',
+    whyBoth: 'Why Clearing Both NET + State SET Helps You',
+    ben1t: 'Broader applicability', ben1d: 'Central + State + Deemed universities all become reachable.',
+    ben2t: 'Domicile boost', ben2d: 'State SET + home-state domicile = stronger shortlisting weight.',
+    ben3t: 'Lower competition', ben3d: 'State SET pools are 5–10× smaller than UGC NET.',
+    ben4t: 'Same UGC pay scale', ben4d: '₹57,700 – ₹1,82,400 + HRA/DA — identical to NET-hired APs.',
+    vacTrack: 'Where to Track AP Vacancies',
+    disclaimer: '⚠ Always verify eligibility from the official notification PDF before applying. Rules, fees, and cycles change each year.',
+    roadmap: 'Suggested Preparation Roadmap',
+    roadNow: 'Now', roadParallel: 'Parallel', roadBackup: 'Backup', roadAlerts: 'Job alerts', roadLong: 'Long-term',
+    ben_tab_title: 'Why Clear a State SET Even If You Have UGC NET?',
+    ben_tab_short: 'Short answer: UGC NET is nationally valid and SET is state-limited — but clearing your home state\'s SET dramatically boosts your odds of landing an AP post there.',
+    b1t: '1. Dual Eligibility', b1d: 'NET gives national reach; SET gives a second, state-focused credential. State colleges list SET/NET as "OR" — having both strengthens applications.',
+    b2t: '2. Lower Competition', b2d: 'State SET has far fewer candidates than UGC NET (which has lakhs). Your relative rank improves significantly.',
+    b3t: '3. Domicile Synergy', b3d: 'State AP recruitments often reserve seats for domicile candidates. SET pairs perfectly with domicile documents.',
+    b4t: '4. No Age Limit', b4d: 'Unlike JRF, SET has zero age cap for the AP track at any career stage.',
+    b5t: '5. Lifetime Validity', b5d: 'Once qualified, SET is valid for life — no re-qualification needed.',
+    b6t: '6. Language Advantage', b6d: 'Several state SETs offer regional language papers — if your strength is regional literature, SET is the primary route.',
+    b7t: '7. Same Pay Scale', b7d: 'AP via SET gets exact same 7th Pay Commission scale: ₹57,700 – ₹1,82,400 + allowances.',
+    b8t: '8. Faster Notifications', b8d: 'State commissions release AP vacancies often and in bulk. Being SET-qualified means immediate eligibility.',
+    cmp_param: 'Parameter', cmp_net: 'UGC NET', cmp_set: 'State SET / SLET',
+    cmp_body_net: 'NTA (on behalf of UGC)', cmp_body_set: 'State agency under UGC',
+    cmp_valid_net: 'Pan-India, lifetime', cmp_valid_set: 'State/region, lifetime',
+    cmp_freq_net: 'Twice/year (Jun & Dec)', cmp_freq_set: 'Once/year (varies)',
+    cmp_age_net: 'None for AP; 30/35 for JRF', cmp_age_set: 'None',
+    cmp_marks_net: '55% PG (50% reserved)', cmp_marks_set: '55% PG (50% reserved)',
+    cmp_comp_net: 'Very high (5–10 lakh+)', cmp_comp_set: 'Moderate (20k–1 lakh)',
+    cmp_jrf_net: 'Yes (UGC)', cmp_jrf_set: 'No — AP only',
+    ben_tip: '💡 Strategic tip: If you\'re already NET-qualified and targeting AP posts in your home state, clearing that state\'s SET is a low-risk, high-reward second layer.',
+    notApplicable: 'Your state does NOT conduct a SET. UGC NET is the only route.',
+    multiBonus: 'Bonus: ',
+  },
+  hi: {
+    mainTitle: 'असिस्टेंट <span>प्रोफेसर</span> पाथवे फाइंडर',
+    langBtn: 'English',
+    tab0: '1. मेरी प्रोफाइल', tab1: '2. राज्य SET एक्सप्लोरर', tab2: '3. NET + SET क्यों?',
+    lbl_net: 'UGC NET स्थिति', lbl_subject: 'विषय (UGC NET)', lbl_cat: 'श्रेणी',
+    lbl_marks: "मास्टर्स अंक", lbl_phd: 'PhD स्थिति', lbl_state: 'गृह राज्य',
+    lbl_geo: 'भूगोल प्राथमिकता', lbl_inst: 'संस्थान प्रकार',
+    opt_ugcap: 'UGC NET — AP उत्तीर्ण', opt_ugcjrf: 'UGC NET — JRF + AP',
+    opt_planning: 'परीक्षा देने की योजना', opt_appeared: 'पहले दिया है, फिर से तैयारी',
+    opt_gen: 'सामान्य / EWS', opt_obc: 'OBC-NCL', opt_sc: 'SC', opt_st: 'ST', opt_pwd: 'PwD',
+    opt_lt50: '50% से कम', opt_5055: '50 – 54.99%', opt_gte55: '55% और अधिक',
+    opt_phdnone: 'नहीं कर रहे', opt_phdongoing: 'जारी है', opt_phdawarded: 'प्राप्त (UGC अनुपालन)',
+    opt_home: 'केवल गृह राज्य', opt_multi: 'गृह + पड़ोसी राज्य', opt_any: 'पूरे भारत में कहीं भी',
+    opt_central: 'केंद्रीय विश्वविद्यालय', opt_stateuni: 'राज्य विश्व / सरकारी कॉलेज', opt_anyinst: 'कोई भी (निजी/सहायता प्राप्त)',
+    btnReset: 'रीसेट', btnAnalyze: 'मेरा पाथवे खोजें →',
+    modalTitle: 'लगभग तैयार!', modalDesc: 'व्यक्तिगत परिणामों के लिए अपना विवरण दर्ज करें',
+    lbl_name: 'पूरा नाम', lbl_phone: 'फोन नंबर (10 अंक)',
+    btnCancel: 'रद्द करें', btnSubmit: 'मेरे परिणाम दिखाएं →',
+    nameErr: 'कृपया अपना पूरा नाम दर्ज करें', phoneErr: 'कृपया वैध 10 अंकों का फोन नंबर दर्ज करें',
+    fillAll: 'सटीक परिणामों के लिए कृपया सभी फ़ील्ड भरें।',
+    select: '-- चुनें --',
+    setTitle: 'गहन विश्लेषण: राज्य पात्रता परीक्षा (SET / SLET)',
+    setDesc: 'नीचे प्रत्येक SET, UGC-पर्यवेक्षित है और उस राज्य/क्षेत्र में आजीवन AP पात्रता प्रदान करती है। कोई ऊपरी आयु सीमा नहीं।',
+    profile: 'प्रोफाइल',
+    netHolder: 'UGC NET धारक', netJRF: 'UGC NET + JRF धारक — प्रीमियम पात्रता',
+    netNotCleared: 'UGC NET अभी तक उत्तीर्ण नहीं', netAppeared: 'पहले परीक्षा दी है, फिर से तैयारी',
+    marksBlocker: "मास्टर्स अंक UGC न्यूनतम से कम",
+    marksBlockerDesc: "UGC को AP पदों के लिए मास्टर्स में 55% (आरक्षित के लिए 50%) चाहिए। यह कठोर नियम है।",
+    netPriority: 'UGC NET — प्राथमिकता #1',
+    netPriorityDesc: 'आपको किसी भी AP पद के लिए UGC NET चाहिए (जब तक आपके पास UGC-अनुपालन PhD न हो)। अगले NET चक्र (जून/दिसंबर) को लक्षित करें।',
+    netConfirmed: '✓ UGC NET पात्रता पुष्टि',
+    netConfirmedDesc: 'आप पूरे भारत में केंद्रीय, राज्य और डीम्ड विश्वविद्यालयों में AP पदों के लिए आवेदन कर सकते हैं। अगला कदम: डोमिसाइल लाभ के लिए राज्य SET भी उत्तीर्ण करें।',
+    netAppDesc: 'आपके पास परीक्षा का अनुभव है — कमजोर क्षेत्रों पर ध्यान दें और मॉक टेस्ट व पिछले वर्ष के प्रश्नपत्रों का अभ्यास करें।',
+    phdExempt: '✓ PhD-आधारित NET छूट',
+    phdExemptDesc: 'UGC 2009/2016-अनुपालन PhD, AP पदों के लिए NET/SET से छूट देती है। अपनी विश्वविद्यालय से अनुपालन प्रमाण पत्र सत्यापित करें।',
+    recSet: 'आपका अनुशंसित राज्य SET',
+    whyBoth: 'NET + राज्य SET दोनों उत्तीर्ण करने के लाभ',
+    ben1t: 'व्यापक पहुंच', ben1d: 'केंद्रीय + राज्य + डीम्ड सभी विश्वविद्यालय पहुंच में।',
+    ben2t: 'डोमिसाइल लाभ', ben2d: 'राज्य SET + गृह राज्य डोमिसाइल = मजबूत शॉर्टलिस्टिंग।',
+    ben3t: 'कम प्रतिस्पर्धा', ben3d: 'राज्य SET पूल, UGC NET से 5-10 गुना छोटे हैं।',
+    ben4t: 'समान वेतनमान', ben4d: '₹57,700 – ₹1,82,400 + HRA/DA — NET से भर्ती AP के समान।',
+    vacTrack: 'AP रिक्तियां कहां ट्रैक करें',
+    disclaimer: '⚠ आवेदन करने से पहले हमेशा आधिकारिक अधिसूचना PDF से पात्रता सत्यापित करें।',
+    roadmap: 'सुझाई गई तैयारी रोडमैप',
+    roadNow: 'अभी', roadParallel: 'समानांतर', roadBackup: 'बैकअप', roadAlerts: 'नौकरी अलर्ट', roadLong: 'दीर्घकालिक',
+    ben_tab_title: 'UGC NET होने पर भी राज्य SET क्यों उत्तीर्ण करें?',
+    ben_tab_short: 'संक्षिप्त उत्तर: UGC NET राष्ट्रीय स्तर पर मान्य है लेकिन गृह राज्य का SET उत्तीर्ण करने से वहां AP पद मिलने की संभावना नाटकीय रूप से बढ़ जाती है।',
+    b1t: '1. दोहरी पात्रता', b1d: 'NET राष्ट्रीय पहुंच देता है; SET राज्य-केंद्रित प्रमाण पत्र।',
+    b2t: '2. कम प्रतिस्पर्धा', b2d: 'राज्य SET में उम्मीदवार UGC NET से बहुत कम होते हैं।',
+    b3t: '3. डोमिसाइल तालमेल', b3d: 'राज्य AP भर्ती में डोमिसाइल उम्मीदवारों को अक्सर प्राथमिकता मिलती है।',
+    b4t: '4. कोई आयु सीमा नहीं', b4d: 'JRF के विपरीत, SET में AP ट्रैक के लिए कोई आयु सीमा नहीं है।',
+    b5t: '5. आजीवन वैधता', b5d: 'एक बार उत्तीर्ण, SET प्रमाण पत्र जीवन भर मान्य रहता है।',
+    b6t: '6. भाषा लाभ', b6d: 'कई राज्य SET क्षेत्रीय भाषा के प्रश्नपत्र प्रदान करते हैं।',
+    b7t: '7. समान वेतनमान', b7d: 'SET से AP को भी 7वें वेतन आयोग का समान वेतनमान मिलता है।',
+    b8t: '8. तेज़ अधिसूचनाएं', b8d: 'राज्य आयोग AP रिक्तियां बड़ी संख्या में जारी करते हैं।',
+    cmp_param: 'पैरामीटर', cmp_net: 'UGC NET', cmp_set: 'राज्य SET / SLET',
+    cmp_body_net: 'NTA (UGC की ओर से)', cmp_body_set: 'UGC के तहत राज्य एजेंसी',
+    cmp_valid_net: 'पूरे भारत, आजीवन', cmp_valid_set: 'राज्य/क्षेत्र, आजीवन',
+    cmp_freq_net: 'वर्ष में दो बार (जून और दिसंबर)', cmp_freq_set: 'वर्ष में एक बार (भिन्न)',
+    cmp_age_net: 'AP के लिए कोई नहीं; JRF 30/35', cmp_age_set: 'कोई नहीं',
+    cmp_marks_net: '55% PG (50% आरक्षित)', cmp_marks_set: '55% PG (50% आरक्षित)',
+    cmp_comp_net: 'बहुत अधिक (5–10 लाख+)', cmp_comp_set: 'मध्यम (20हजार–1 लाख)',
+    cmp_jrf_net: 'हां (UGC)', cmp_jrf_set: 'नहीं — केवल AP',
+    ben_tip: '💡 रणनीतिक सुझाव: यदि आप पहले से NET-उत्तीर्ण हैं और गृह राज्य में AP पद चाहते हैं, तो राज्य SET उत्तीर्ण करना कम-जोखिम, उच्च-लाभ वाला कदम है।',
+    notApplicable: 'आपके राज्य में SET परीक्षा आयोजित नहीं होती। UGC NET ही एकमात्र मार्ग है।',
+    multiBonus: 'बोनस: ',
+  }
+};
+
+const SUBJECTS_EN = [
+  'Economics','Political Science','Philosophy','Psychology','Sociology','History','Anthropology',
+  'Commerce','Management','Geography','Social Work','Education','Physical Education',
+  'Hindi','English','Sanskrit','Urdu','Arabic','Bengali','Gujarati','Kannada','Malayalam',
+  'Marathi','Odia','Punjabi','Tamil','Telugu','Assamese','Manipuri','Nepali','Bodo','Dogri','Maithili','Santali',
+  'Law','Public Administration','Home Science','Mass Communication & Journalism',
+  'Performing Arts (Dance/Drama/Theatre)','Music','Visual Arts','Forensic Science','Environmental Sciences',
+  'Computer Science & Applications','Electronic Science','Library & Information Science',
+  'Tourism Administration','Human Rights','Labour Welfare','Adult Education','Population Studies',
+  'Yoga','Folk Literature','Defence & Strategic Studies','Women Studies','Comparative Literature',
+  'Linguistics','Buddhist Studies','Criminology','Tribal Studies','Others'
+];
+const SUBJECTS_HI = [
+  'अर्थशास्त्र','राजनीति विज्ञान','दर्शनशास्त्र','मनोविज्ञान','समाजशास्त्र','इतिहास','मानवशास्त्र',
+  'वाणिज्य','प्रबंधन','भूगोल','समाज कार्य','शिक्षा','शारीरिक शिक्षा',
+  'हिंदी','अंग्रेज़ी','संस्कृत','उर्दू','अरबी','बांग्ला','गुजराती','कन्नड़','मलयालम',
+  'मराठी','ओड़िया','पंजाबी','तमिल','तेलुगु','असमिया','मणिपुरी','नेपाली','बोडो','डोगरी','मैथिली','संताली',
+  'विधि','लोक प्रशासन','गृह विज्ञान','जनसंचार एवं पत्रकारिता',
+  'प्रदर्शन कला (नृत्य/नाटक/रंगमंच)','संगीत','दृश्य कला','फोरेंसिक विज्ञान','पर्यावरण विज्ञान',
+  'कंप्यूटर विज्ञान एवं अनुप्रयोग','इलेक्ट्रॉनिक विज्ञान','पुस्तकालय एवं सूचना विज्ञान',
+  'पर्यटन प्रशासन','मानवाधिकार','श्रम कल्याण','प्रौढ़ शिक्षा','जनसंख्या अध्ययन',
+  'योग','लोक साहित्य','रक्षा एवं रणनीतिक अध्ययन','महिला अध्ययन','तुलनात्मक साहित्य',
+  'भाषाविज्ञान','बौद्ध अध्ययन','अपराधशास्त्र','जनजातीय अध्ययन','अन्य'
+];
+
+const STATES = [
+  {v:'UP',en:'Uttar Pradesh',hi:'उत्तर प्रदेश'},{v:'MH',en:'Maharashtra / Goa',hi:'महाराष्ट्र / गोवा'},
+  {v:'WB',en:'West Bengal',hi:'पश्चिम बंगाल'},{v:'TN',en:'Tamil Nadu',hi:'तमिलनाडु'},
+  {v:'KA',en:'Karnataka',hi:'कर्नाटक'},{v:'GJ',en:'Gujarat',hi:'गुजरात'},
+  {v:'RJ',en:'Rajasthan',hi:'राजस्थान'},{v:'KL',en:'Kerala',hi:'केरल'},
+  {v:'TS',en:'Telangana',hi:'तेलंगाना'},{v:'AP',en:'Andhra Pradesh',hi:'आंध्र प्रदेश'},
+  {v:'HP',en:'Himachal Pradesh',hi:'हिमाचल प्रदेश'},{v:'JK',en:'J&K',hi:'जम्मू-कश्मीर'},
+  {v:'CG',en:'Chhattisgarh',hi:'छत्तीसगढ़'},{v:'MP',en:'Madhya Pradesh',hi:'मध्य प्रदेश'},
+  {v:'OD',en:'Odisha',hi:'ओडिशा'},{v:'BR',en:'Bihar',hi:'बिहार'},
+  {v:'JH',en:'Jharkhand',hi:'झारखंड'},{v:'PB',en:'Punjab',hi:'पंजाब'},
+  {v:'HR',en:'Haryana',hi:'हरियाणा'},{v:'NE',en:'North-East (8 states)',hi:'पूर्वोत्तर (8 राज्य)'},
+  {v:'DL',en:'Delhi / Other UT',hi:'दिल्ली / अन्य केंद्र शासित'}
+];
+
+const SETS = {
+  UP:{name:"UP SET",body:{en:"UPHESC (Prayagraj)",hi:"UPHESC (प्रयागराज)"},subjects:{en:"30+ subjects",hi:"30+ विषय"},freq:{en:"Annual",hi:"वार्षिक"},fee:"~₹800",validity:{en:"UP only",hi:"केवल UP"},web:"https://uphesc.org",notes:{en:"Qualified candidates are shortlisted by UPHESC for AP recruitment across 70+ state colleges.",hi:"उत्तीर्ण उम्मीदवारों को UPHESC 70+ राज्य कॉलेजों में AP भर्ती के लिए शॉर्टलिस्ट करता है।"}},
+  MH:{name:"MH-SET",body:{en:"Savitribai Phule Pune University",hi:"सावित्रीबाई फुले पुणे विश्वविद्यालय"},subjects:{en:"32 subjects",hi:"32 विषय"},freq:{en:"Annual (April)",hi:"वार्षिक (अप्रैल)"},fee:"~₹800",validity:{en:"Maharashtra + Goa",hi:"महाराष्ट्र + गोवा"},web:"https://setexam.unipune.ac.in",notes:{en:"Valid in both Maharashtra and Goa — dual state advantage.",hi:"महाराष्ट्र और गोवा दोनों में मान्य — दोहरा राज्य लाभ।"}},
+  WB:{name:"WB SET",body:{en:"WB College Service Commission",hi:"WB कॉलेज सेवा आयोग"},subjects:{en:"33 subjects incl. Bengali",hi:"बांग्ला सहित 33 विषय"},freq:{en:"Annual",hi:"वार्षिक"},fee:"~₹1200",validity:{en:"West Bengal only",hi:"केवल पश्चिम बंगाल"},web:"https://www.wbcsconline.in",notes:{en:"WBCSC also conducts direct AP recruitment — SET is a direct pipeline.",hi:"WBCSC सीधे AP भर्ती भी करता है — SET एक सीधी पाइपलाइन है।"}},
+  TN:{name:"TN SET",body:{en:"Mother Teresa Women's University",hi:"मदर टेरेसा महिला विश्वविद्यालय"},subjects:{en:"27 subjects",hi:"27 विषय"},freq:{en:"Annual/biennial",hi:"वार्षिक/द्विवार्षिक"},fee:"~₹750",validity:{en:"Tamil Nadu only",hi:"केवल तमिलनाडु"},web:"https://tnset.org",notes:{en:"Tamil language paper exclusive to TN SET. Less frequent — apply whenever notified.",hi:"तमिल भाषा प्रश्नपत्र TN SET के लिए विशेष। कम बार — जब भी अधिसूचित हो आवेदन करें।"}},
+  KA:{name:"K-SET",body:{en:"University of Mysore",hi:"मैसूर विश्वविद्यालय"},subjects:{en:"41 subjects",hi:"41 विषय"},freq:{en:"Annual",hi:"वार्षिक"},fee:"~₹1000",validity:{en:"Karnataka only",hi:"केवल कर्नाटक"},web:"https://kset.uni-mysore.ac.in",notes:{en:"Kannada paper available. Widely accepted by Karnataka state universities.",hi:"कन्नड़ प्रश्नपत्र उपलब्ध। कर्नाटक राज्य विश्वविद्यालयों द्वारा व्यापक रूप से स्वीकृत।"}},
+  GJ:{name:"GSET",body:{en:"MS University of Baroda",hi:"MS बड़ौदा विश्वविद्यालय"},subjects:{en:"26 subjects",hi:"26 विषय"},freq:{en:"Annual",hi:"वार्षिक"},fee:"~₹900",validity:{en:"Gujarat only",hi:"केवल गुजरात"},web:"https://gujaratset.ac.in",notes:{en:"Gujarati literature paper available. Strong link to state college recruitment.",hi:"गुजराती साहित्य प्रश्नपत्र उपलब्ध। राज्य कॉलेज भर्ती से मजबूत जुड़ाव।"}},
+  RJ:{name:"Rajasthan SET",body:{en:"RPSC pathway",hi:"RPSC मार्ग"},subjects:{en:"25+ subjects",hi:"25+ विषय"},freq:{en:"Irregular",hi:"अनियमित"},fee:"Varies",validity:{en:"Rajasthan only",hi:"केवल राजस्थान"},web:"https://rpsc.rajasthan.gov.in",notes:{en:"SET cycles irregular — watch RPSC notifications. UGC NET is more reliable route.",hi:"SET चक्र अनियमित — RPSC अधिसूचनाएं देखें। UGC NET अधिक विश्वसनीय मार्ग है।"}},
+  KL:{name:"Kerala SET",body:{en:"LBS Centre",hi:"LBS सेंटर"},subjects:{en:"HSST + college level",hi:"HSST + कॉलेज स्तर"},freq:{en:"Annual",hi:"वार्षिक"},fee:"~₹1000",validity:{en:"Kerala only",hi:"केवल केरल"},web:"https://www.lbscentre.kerala.gov.in",notes:{en:"Kerala SET primarily targets HSST posts. For college AP, UGC NET is better route in Kerala.",hi:"केरल SET मुख्य रूप से HSST पदों को लक्षित करती है। कॉलेज AP के लिए UGC NET बेहतर है।"}},
+  TS:{name:"TS SET",body:{en:"Osmania University",hi:"उस्मानिया विश्वविद्यालय"},subjects:{en:"29+ subjects",hi:"29+ विषय"},freq:{en:"Annual",hi:"वार्षिक"},fee:"~₹1000",validity:{en:"Telangana only",hi:"केवल तेलंगाना"},web:"https://telanganaset.org",notes:{en:"Telugu language paper available. Telangana and AP run separate SETs.",hi:"तेलुगु भाषा प्रश्नपत्र उपलब्ध। तेलंगाना और AP अलग-अलग SET आयोजित करते हैं।"}},
+  AP:{name:"AP SET",body:{en:"Andhra University",hi:"आंध्र विश्वविद्यालय"},subjects:{en:"29 subjects",hi:"29 विषय"},freq:{en:"Annual",hi:"वार्षिक"},fee:"~₹1000",validity:{en:"Andhra Pradesh only",hi:"केवल आंध्र प्रदेश"},web:"https://apset.net.in",notes:{en:"Feeds directly into AP state university AP recruitment cycles.",hi:"AP राज्य विश्वविद्यालय AP भर्ती चक्रों में सीधे शामिल होता है।"}},
+  HP:{name:"HP SET",body:{en:"HPPSC",hi:"HPPSC"},subjects:{en:"25+ subjects",hi:"25+ विषय"},freq:{en:"Irregular",hi:"अनियमित"},fee:"Varies",validity:{en:"Himachal Pradesh only",hi:"केवल हिमाचल प्रदेश"},web:"https://www.hppsc.hp.gov.in",notes:{en:"Less frequent. NET is more reliable route for HP.",hi:"कम बार। HP के लिए NET अधिक विश्वसनीय मार्ग है।"}},
+  JK:{name:"J&K SET",body:{en:"University of Jammu",hi:"जम्मू विश्वविद्यालय"},subjects:{en:"20+ subjects",hi:"20+ विषय"},freq:{en:"Irregular",hi:"अनियमित"},fee:"Varies",validity:{en:"J&K UT",hi:"J&K केंद्र शासित"},web:"https://www.jammuuniversity.ac.in",notes:{en:"Irregular cycles. NET remains primary route.",hi:"अनियमित चक्र। NET प्राथमिक मार्ग बना रहता है।"}},
+  CG:{name:"CG SET",body:{en:"CGPEB (Vyapam)",hi:"CGPEB (व्यापम)"},subjects:{en:"22+ subjects",hi:"22+ विषय"},freq:{en:"Irregular",hi:"अनियमित"},fee:"Varies",validity:{en:"Chhattisgarh only",hi:"केवल छत्तीसगढ़"},web:"https://vyapam.cgstate.gov.in",notes:{en:"Runs via CG Vyapam. Check PSC notifications parallelly.",hi:"CG व्यापम के माध्यम से चलता है। PSC अधिसूचनाएं समानांतर जांचें।"}},
+  MP:{name:"MP SET",body:{en:"MPPSC",hi:"MPPSC"},subjects:{en:"Varies",hi:"भिन्न"},freq:{en:"Rare",hi:"दुर्लभ"},fee:"Varies",validity:{en:"Madhya Pradesh",hi:"मध्य प्रदेश"},web:"https://www.mppsc.mp.gov.in",notes:{en:"MP relies on UGC NET + MPPSC AP recruitment directly. SET cycles are rare.",hi:"MP, UGC NET + MPPSC AP भर्ती पर सीधे निर्भर करता है। SET चक्र दुर्लभ हैं।"}},
+  OD:{name:"Odisha SET",body:{en:"OPSC",hi:"OPSC"},subjects:{en:"Limited",hi:"सीमित"},freq:{en:"Irregular",hi:"अनियमित"},fee:"Varies",validity:{en:"Odisha",hi:"ओडिशा"},web:"https://www.opsc.gov.in",notes:{en:"Odisha mostly uses NET + OPSC for AP recruitment.",hi:"ओडिशा ज्यादातर AP भर्ती के लिए NET + OPSC का उपयोग करता है।"}},
+  BR:{name:"Bihar (BSUSC)",body:{en:"Bihar State University Service Commission",hi:"बिहार राज्य विश्वविद्यालय सेवा आयोग"},subjects:{en:"Recruitment-linked",hi:"भर्ती-लिंक्ड"},freq:{en:"Recruitment cycles",hi:"भर्ती चक्र"},fee:"N/A",validity:{en:"Bihar",hi:"बिहार"},web:"https://bsusc.bihar.gov.in",notes:{en:"No standalone SET. BSUSC conducts direct AP recruitment requiring UGC NET/PhD.",hi:"कोई स्वतंत्र SET नहीं। BSUSC, UGC NET/PhD आवश्यक AP भर्ती सीधे आयोजित करता है।"}},
+  JH:{name:"Jharkhand (JPSC)",body:{en:"JPSC",hi:"JPSC"},subjects:{en:"N/A",hi:"लागू नहीं"},freq:{en:"Recruitment-tied",hi:"भर्ती-बद्ध"},fee:"N/A",validity:{en:"Jharkhand",hi:"झारखंड"},web:"https://www.jpsc.gov.in",notes:{en:"No active SET — JPSC runs AP recruitment directly. UGC NET is primary requirement.",hi:"कोई सक्रिय SET नहीं — JPSC सीधे AP भर्ती करता है। UGC NET प्राथमिक आवश्यकता है।"}},
+  PB:{name:"Punjab SET",body:{en:"Punjabi University, Patiala",hi:"पंजाबी विश्वविद्यालय, पटियाला"},subjects:{en:"20+ incl. Punjabi",hi:"पंजाबी सहित 20+"},freq:{en:"Irregular",hi:"अनियमित"},fee:"Varies",validity:{en:"Punjab only",hi:"केवल पंजाब"},web:"https://www.punjabiuniversity.ac.in",notes:{en:"Punjabi literature paper exclusive here.",hi:"पंजाबी साहित्य प्रश्नपत्र यहां विशेष है।"}},
+  HR:{name:"Haryana",body:{en:"No SET — uses UGC NET",hi:"कोई SET नहीं — UGC NET उपयोग"},subjects:{en:"N/A",hi:"लागू नहीं"},freq:{en:"N/A",hi:"लागू नहीं"},fee:"N/A",validity:{en:"UGC NET directly",hi:"सीधे UGC NET"},web:"https://hpsc.gov.in",notes:{en:"Haryana does NOT conduct its own SET. HPSC recruits APs via UGC NET.",hi:"हरियाणा अपना SET आयोजित नहीं करता। HPSC, UGC NET के माध्यम से AP भर्ती करता है।"}},
+  NE:{name:"NE-SLET",body:{en:"SLET Commission, Assam",hi:"SLET आयोग, असम"},subjects:{en:"25+ subjects",hi:"25+ विषय"},freq:{en:"Annual",hi:"वार्षिक"},fee:"~₹1000",validity:{en:"8 NE states: Assam, Arunachal, Manipur, Meghalaya, Mizoram, Nagaland, Sikkim, Tripura",hi:"8 पूर्वोत्तर राज्य"},web:"https://www.sletne.org",notes:{en:"BEST multi-state coverage — one exam, 8 states of eligibility. Highest ROI of any SET.",hi:"सर्वश्रेष्ठ बहु-राज्य कवरेज — एक परीक्षा, 8 राज्यों की पात्रता। किसी भी SET का सबसे अधिक ROI।"}},
+  DL:{name:"Delhi / UT",body:{en:"No SET — UGC NET used",hi:"कोई SET नहीं — UGC NET"},subjects:{en:"N/A",hi:"लागू नहीं"},freq:{en:"N/A",hi:"लागू नहीं"},fee:"N/A",validity:{en:"UGC NET",hi:"UGC NET"},web:"https://ugcnet.nta.ac.in",notes:{en:"Delhi has no separate SET. All Delhi colleges recruit via UGC NET + institutional processes.",hi:"दिल्ली में कोई अलग SET नहीं। सभी दिल्ली कॉलेज UGC NET + संस्थागत प्रक्रियाओं से भर्ती करते हैं।"}},
+};
+const NO_SET_STATES = ['HR','DL','BR','JH'];
+
+function t(key) { return T[lang][key] || key; }
+function toggleLang() {
+  lang = lang === 'en' ? 'hi' : 'en';
+  applyLang();
+}
+function applyLang() {
+  document.getElementById('mainTitle').innerHTML = t('mainTitle');
+  document.getElementById('langBtn').textContent = t('langBtn');
+  ['tab0','tab1','tab2','lbl_net','lbl_subject','lbl_cat','lbl_marks','lbl_phd','lbl_state',
+   'lbl_geo','lbl_inst','opt_ugcap','opt_ugcjrf','opt_planning','opt_appeared',
+   'opt_gen','opt_obc','opt_sc','opt_st','opt_pwd','opt_lt50','opt_5055','opt_gte55',
+   'opt_phdnone','opt_phdongoing','opt_phdawarded','opt_home','opt_multi','opt_any',
+   'opt_central','opt_stateuni','opt_anyinst','btnReset','btnAnalyze',
+   'modalTitle','modalDesc','lbl_name','lbl_phone','btnCancel','btnSubmit','setTitle','setDesc'
+  ].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = t(id);
+  });
+  // Update select defaults
+  document.querySelectorAll('select option[value=""]').forEach(o => o.textContent = t('select'));
+  populateSubjects();
+  populateStates();
+  renderSetList();
+  renderBenefitsTab();
+}
+
+function populateSubjects() {
+  const sel = document.getElementById('subject');
+  const val = sel.value;
+  const subs = lang === 'en' ? SUBJECTS_EN : SUBJECTS_HI;
+  sel.innerHTML = `<option value="">${t('select')}</option>`;
+  subs.forEach((s,i) => {
+    const o = document.createElement('option');
+    o.value = SUBJECTS_EN[i]; o.textContent = s;
+    sel.appendChild(o);
+  });
+  sel.value = val;
+}
+function populateStates() {
+  const sel = document.getElementById('state');
+  const val = sel.value;
+  sel.innerHTML = `<option value="">${t('select')}</option>`;
+  STATES.forEach(s => {
+    const o = document.createElement('option');
+    o.value = s.v; o.textContent = s[lang];
+    sel.appendChild(o);
+  });
+  sel.value = val;
+}
+
+function switchTab(i) {
+  document.querySelectorAll('.tab').forEach((t,idx) => t.classList.toggle('active', idx===i));
+  document.querySelectorAll('.panel').forEach((p,idx) => p.classList.toggle('active', idx===i));
+}
+
+function renderSetList() {
+  let html = '';
+  Object.entries(SETS).forEach(([code, s]) => {
+    html += `<div class="card"><div class="card-head"><div><div class="card-name">${s.name}</div><div class="card-sub">${s.body[lang]}</div></div><a href="${s.web}" target="_blank" class="badge elig" style="text-decoration:none;">Official ↗</a></div><div class="card-body"><strong>${lang==='en'?'Validity':'वैधता'}:</strong> ${s.validity[lang]}<br><strong>${lang==='en'?'Subjects':'विषय'}:</strong> ${s.subjects[lang]}<br><strong>${lang==='en'?'Frequency':'आवृत्ति'}:</strong> ${s.freq[lang]} &nbsp;|&nbsp; <strong>${lang==='en'?'Fee':'शुल्क'}:</strong> ${s.fee}<br><em style="color:var(--text2);">${s.notes[lang]}</em></div></div>`;
+  });
+  document.getElementById('setList').innerHTML = html;
+}
+
+function renderBenefitsTab() {
+  const p = document.getElementById('panel2');
+  p.innerHTML = `
+    <div class="sec-title">${t('ben_tab_title')}</div>
+    <div class="highlight"><strong>${lang==='en'?'Short answer':'संक्षिप्त उत्तर'}:</strong> ${t('ben_tab_short')}</div>
+    <div class="ben-grid">
+      ${['b1','b2','b3','b4','b5','b6','b7','b8'].map(k => `<div class="ben"><strong>${t(k+'t')}</strong>${t(k+'d')}</div>`).join('')}
+    </div>
+    <div class="sec-title">NET vs SET</div>
+    <table><thead><tr><th>${t('cmp_param')}</th><th>${t('cmp_net')}</th><th>${t('cmp_set')}</th></tr></thead><tbody>
+      <tr><td>${lang==='en'?'Conducting body':'संचालन निकाय'}</td><td>${t('cmp_body_net')}</td><td>${t('cmp_body_set')}</td></tr>
+      <tr><td>${lang==='en'?'Validity':'वैधता'}</td><td>${t('cmp_valid_net')}</td><td>${t('cmp_valid_set')}</td></tr>
+      <tr><td>${lang==='en'?'Frequency':'आवृत्ति'}</td><td>${t('cmp_freq_net')}</td><td>${t('cmp_freq_set')}</td></tr>
+      <tr><td>${lang==='en'?'Age limit':'आयु सीमा'}</td><td>${t('cmp_age_net')}</td><td>${t('cmp_age_set')}</td></tr>
+      <tr><td>${lang==='en'?'Min marks':'न्यूनतम अंक'}</td><td>${t('cmp_marks_net')}</td><td>${t('cmp_marks_set')}</td></tr>
+      <tr><td>${lang==='en'?'Competition':'प्रतिस्पर्धा'}</td><td>${t('cmp_comp_net')}</td><td>${t('cmp_comp_set')}</td></tr>
+      <tr><td>JRF</td><td>${t('cmp_jrf_net')}</td><td>${t('cmp_jrf_set')}</td></tr>
+    </tbody></table>
+    <div class="disclaimer">${t('ben_tip')}</div>`;
+}
+
+function showModal() {
+  const fields = ['net','subject','cat','marks','phd','state','geo','inst'];
+  for (const f of fields) { if (!document.getElementById(f).value) { alert(t('fillAll')); return; } }
+  document.getElementById('modalOverlay').classList.add('show');
+  document.getElementById('userName').focus();
+}
+function hideModal() { document.getElementById('modalOverlay').classList.remove('show'); }
+
+function resetForm() {
+  ['net','subject','cat','marks','phd','state','geo','inst'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('results').innerHTML = '';
+}
+
+function analyze() {
+  const name = document.getElementById('userName').value.trim();
+  const phone = document.getElementById('userPhone').value.trim();
+  let valid = true;
+  if (!name || name.length < 2) { document.getElementById('nameErr').style.display='block'; document.getElementById('nameErr').textContent=t('nameErr'); valid=false; }
+  else { document.getElementById('nameErr').style.display='none'; }
+  if (!/^[6-9]\d{9}$/.test(phone)) { document.getElementById('phoneErr').style.display='block'; document.getElementById('phoneErr').textContent=t('phoneErr'); valid=false; }
+  else { document.getElementById('phoneErr').style.display='none'; }
+  if (!valid) return;
+  hideModal();
+  runAnalysis(name);
+}
+
+function runAnalysis(name) {
+  const net=v('net'), subject=v('subject'), cat=v('cat'), marks=v('marks'), phd=v('phd'), state=v('state'), geo=v('geo'), inst=v('inst');
+  const reserved = cat !== 'gen';
+  const marksOK = marks === 'gte55' || (reserved && marks === '50-55');
+  const netCleared = net === 'ugc-ap' || net === 'ugc-jrf';
+  const appeared = net === 'appeared';
+  const hasPhD = phd === 'awarded';
+
+  let html = '';
+  // Snapshot
+  let snap = `<strong>${t('profile')}:</strong> `;
+  if (net === 'ugc-jrf') snap += t('netJRF') + ' ';
+  else if (net === 'ugc-ap') snap += t('netHolder') + ' ';
+  else if (appeared) snap += t('netAppeared') + ' ';
+  else snap += t('netNotCleared') + ' ';
+  snap += `| ${subject} | ${cat.toUpperCase()} | ${STATES.find(s=>s.v===state)?.[lang] || state}`;
+  html += `<div class="snapshot">${snap}</div>`;
+
+  // Eligibility
+  html += `<div class="sec-title">${lang==='en'?'Core Eligibility':'मुख्य पात्रता'}</div>`;
+  if (!marksOK) html += card(t('marksBlocker'),'not',t('marksBlockerDesc'));
+  if (!netCleared && !appeared) html += card(t('netPriority'),'maybe',t('netPriorityDesc'));
+  else if (appeared) html += card(t('netPriority'),'maybe',t('netAppDesc'));
+  else html += card(t('netConfirmed'),'elig',t('netConfirmedDesc'));
+  if (hasPhD) html += card(t('phdExempt'),'elig',t('phdExemptDesc'));
+
+  // Recommended SET
+  html += `<div class="sec-title">${t('recSet')}</div>`;
+  const s = SETS[state];
+  if (s) {
+    if (NO_SET_STATES.includes(state)) {
+      html += card(s.name,'not',t('notApplicable') + ' ' + s.notes[lang]);
+    } else {
+      const special = state==='NE' ? `<strong style="color:var(--green);">★ ${lang==='en'?'Multi-state':'बहु-राज्य'}:</strong> ${s.validity[lang]}<br>` : '';
+      html += `<div class="card"><div class="card-head"><div><div class="card-name">${s.name}</div><div class="card-sub">${s.body[lang]} • ${s.validity[lang]}</div></div><a href="${s.web}" target="_blank" class="badge elig" style="text-decoration:none;">${lang==='en'?'Apply':'आवेदन'} ↗</a></div><div class="card-body">${special}<strong>${lang==='en'?'Why it matters':'यह क्यों महत्वपूर्ण है'}:</strong> ${s.notes[lang]}<br><strong>${lang==='en'?'Subjects':'विषय'}:</strong> ${s.subjects[lang]} | <strong>${lang==='en'?'Fee':'शुल्क'}:</strong> ${s.fee} | <strong>${lang==='en'?'Frequency':'आवृत्ति'}:</strong> ${s.freq[lang]}</div></div>`;
+    }
+  }
+  if (geo==='multi' && state==='MH') html += `<div class="card"><div class="card-body"><strong>${t('multiBonus')}</strong>${lang==='en'?'MH-SET is also valid in Goa — no extra exam needed.':'MH-SET गोवा में भी मान्य है।'}</div></div>`;
+  if (geo==='multi' && state==='NE') html += `<div class="card"><div class="card-body"><strong>${t('multiBonus')}</strong>${lang==='en'?'NE-SLET already covers 8 states.':'NE-SLET पहले से 8 राज्यों को कवर करती है।'}</div></div>`;
+
+  // Benefits summary
+  html += `<div class="sec-title">${t('whyBoth')}</div>`;
+  html += `<div class="ben-grid"><div class="ben"><strong>${t('ben1t')}</strong>${t('ben1d')}</div><div class="ben"><strong>${t('ben2t')}</strong>${t('ben2d')}</div><div class="ben"><strong>${t('ben3t')}</strong>${t('ben3d')}</div><div class="ben"><strong>${t('ben4t')}</strong>${t('ben4d')}</div></div>`;
+
+  // Roadmap
+  html += `<div class="sec-title">${t('roadmap')}</div><div class="card"><div class="card-body">`;
+  let steps = [];
+  if (!netCleared || appeared) steps.push(`<strong>${t('roadNow')}:</strong> ${lang==='en'?'Register for the next UGC NET cycle (June/December). Focus on Paper 1 + your subject paper.':'अगले UGC NET चक्र (जून/दिसंबर) के लिए पंजीकरण करें। पेपर 1 + अपने विषय पेपर पर ध्यान दें।'}`);
+  if (netCleared) steps.push(`<strong>${t('roadNow')}:</strong> ${lang==='en'?'Start applying to AP vacancies — you are already eligible.':'AP रिक्तियों के लिए आवेदन शुरू करें — आप पहले से पात्र हैं।'}`);
+  if (!NO_SET_STATES.includes(state)) steps.push(`<strong>${t('roadBackup')}:</strong> ${lang==='en'?'Track your state SET notification — clear it for domicile advantage.':'अपने राज्य SET अधिसूचना ट्रैक करें — डोमिसाइल लाभ के लिए उत्तीर्ण करें।'}`);
+  steps.push(`<strong>${t('roadAlerts')}:</strong> ${lang==='en'?'Monitor UPHESC, state PSC, and university career portals weekly.':'साप्ताहिक रूप से UPHESC, राज्य PSC और विश्वविद्यालय कैरियर पोर्टल देखें।'}`);
+  if (!hasPhD) steps.push(`<strong>${t('roadLong')}:</strong> ${lang==='en'?'Plan PhD admission — JRF opens funded routes; UGC-compliant PhD gives NET exemption.':'PhD प्रवेश की योजना बनाएं — JRF वित्त पोषित मार्ग खोलता है; UGC-अनुपालन PhD, NET छूट देती है।'}`);
+  html += steps.map(s => `• ${s}`).join('<br>') + '</div></div>';
+
+  // Vacancy sources
+  html += `<div class="sec-title">${t('vacTrack')}</div>`;
+  html += `<table><thead><tr><th>${lang==='en'?'Source':'स्रोत'}</th><th>${lang==='en'?'What to watch':'क्या देखें'}</th><th>${lang==='en'?'Link':'लिंक'}</th></tr></thead><tbody>`;
+  if (s && !NO_SET_STATES.includes(state)) html += `<tr><td>${s.name}</td><td>SET + AP</td><td><a href="${s.web}" target="_blank">Open</a></td></tr>`;
+  html += `<tr><td>UGC</td><td>${lang==='en'?'Central university recruitment':'केंद्रीय विश्वविद्यालय भर्ती'}</td><td><a href="https://www.ugc.gov.in" target="_blank">ugc.gov.in</a></td></tr>`;
+  html += `<tr><td>NTA</td><td>UGC NET</td><td><a href="https://ugcnet.nta.ac.in" target="_blank">ugcnet.nta.ac.in</a></td></tr>`;
+  html += `<tr><td>${lang==='en'?'Employment News':'रोजगार समाचार'}</td><td>${lang==='en'?'Weekly consolidated':'साप्ताहिक समेकित'}</td><td><a href="https://employmentnews.gov.in" target="_blank">Open</a></td></tr>`;
+  html += '</tbody></table>';
+  html += `<div class="disclaimer">${t('disclaimer')}</div>`;
+
+  document.getElementById('results').innerHTML = html;
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+}
+
+function v(id) { return document.getElementById(id).value; }
+function card(title, status, body) {
+  const labels = {elig: '✓', maybe: '⚠', not: '✗'};
+  return `<div class="card"><div class="card-head"><div class="card-name">${title}</div><span class="badge ${status}">${labels[status]}</span></div><div class="card-body">${body}</div></div>`;
+}
+
+// Init
+applyLang();
+</script>
+</body>
+</html>
