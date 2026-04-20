@@ -3,91 +3,76 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Assistant Professor Vacancy Finder</title>
+<title>Assistant Professor Pathway Finder</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f8f7f4;--card:#fff;--pk:#e63462;--dk:#1a1a2e;--tx:#1a1a2e;--t2:#6b6b88;--bd:#e8e6e1;--gn:#0d9f6e;--sh:0 1px 3px rgba(26,26,46,.06),0 6px 16px rgba(26,26,46,.04)}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Outfit','Noto Sans Devanagari',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
-
 .hdr{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
-.hdr-l{display:flex;align-items:center;gap:12px}
-.logo{height:30px}
-.hdr h1{color:#fff;font-size:15px;font-weight:600}
-.hdr h1 b{color:var(--pk)}
+.hdr-l{display:flex;align-items:center;gap:12px}.logo{height:30px}
+.hdr h1{color:#fff;font-size:15px;font-weight:600}.hdr h1 b{color:var(--pk)}
 .lang{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;padding:5px 12px;border-radius:16px;font-family:inherit;font-size:11px;cursor:pointer}
-
 .wrap{max-width:920px;margin:0 auto;padding:16px 14px 60px}
 .sec{background:var(--card);border-radius:12px;box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
 .sh{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px}
 .sh .n{background:var(--pk);color:#fff;min-width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
-.sh h2{font-size:15px;font-weight:700}
-.sb{padding:18px}
-
+.sh h2{font-size:15px;font-weight:700}.sb{padding:18px}
 .fg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .f{display:flex;flex-direction:column}
 .f label{font-size:10px;font-weight:600;color:var(--t2);margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px}
 .f select,.f input{padding:9px 10px;border:1.5px solid var(--bd);border-radius:7px;font-size:13px;font-family:inherit;background:var(--bg);color:var(--tx)}
 .f select:focus,.f input:focus{outline:none;border-color:var(--pk)}
-.pw{position:relative}
-.pw input{width:100%;padding-right:48px}
-.pw button{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--pk);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
-.err{color:#dc2626;font-size:10px;margin-top:2px;display:none}
 .br{grid-column:1/-1;display:flex;gap:8px;margin-top:6px}
 button{font-family:inherit;cursor:pointer;transition:all .15s}
 .bp{flex:1;padding:12px;border:none;border-radius:8px;font-size:14px;font-weight:600;background:linear-gradient(135deg,#e63462,#fe4a72);color:#fff}
 .bp:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(230,52,98,.2)}
 .br2{padding:12px 16px;border:1.5px solid var(--bd);border-radius:8px;font-size:12px;background:var(--card);color:var(--t2)}
-
+/* Modal */
+.mo{display:none;position:fixed;inset:0;background:rgba(26,26,46,.55);z-index:100;align-items:center;justify-content:center}
+.mo.show{display:flex}
+.mo-box{background:var(--card);border-radius:14px;padding:28px;width:90%;max-width:400px;box-shadow:0 20px 50px rgba(26,26,46,.3)}
+.mo-box h3{font-size:17px;margin-bottom:3px}.mo-box>p{font-size:12px;color:var(--t2);margin-bottom:18px}
+.mo-box .f{margin-bottom:14px}
+.mo-box .f input{width:100%;padding:10px 12px;border:1.5px solid var(--bd);border-radius:7px;font-size:14px;font-family:inherit;background:var(--bg)}
+.mo-box .f input:focus{outline:none;border-color:var(--pk)}
+.pw{position:relative}.pw input{padding-right:50px}
+.pw button{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--pk);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
+.mo-err{color:#dc2626;font-size:10px;margin-top:2px;display:none}
+.mo-btns{display:flex;gap:8px;margin-top:16px}
+.mo-btns .btn-c{padding:11px 18px;border:1.5px solid var(--bd);border-radius:7px;background:var(--card);color:var(--t2);font-size:13px;font-family:inherit}
+/* Results */
 .cta{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,#1a1a2e,#2d2d5e);border-radius:12px;padding:18px 22px;margin-bottom:16px;gap:12px;flex-wrap:wrap}
 .cta-t{color:#fff}.cta-t h3{font-size:15px;margin-bottom:2px}.cta-t p{font-size:12px;opacity:.8}
 .cta-b{padding:10px 22px;border:none;border-radius:8px;font-size:13px;font-weight:700;background:var(--pk);color:#fff;text-decoration:none;white-space:nowrap}
-
 .chips{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
 .chip{padding:6px 12px;border-radius:16px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid var(--bd);background:var(--card);color:var(--t2)}
 .chip.on{background:var(--dk);color:#fff;border-color:var(--dk)}
-
-.vc{border:1px solid var(--bd);border-radius:10px;margin-bottom:10px;overflow:hidden}
-.vc:hover{box-shadow:var(--sh)}
+.vc{border:1px solid var(--bd);border-radius:10px;margin-bottom:10px;overflow:hidden}.vc:hover{box-shadow:var(--sh)}
 .vc-m{padding:14px 16px;cursor:pointer}
 .vc-st{display:inline-block;padding:5px 16px;border-radius:6px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;background:var(--dk);color:#fff;margin-bottom:8px}
 .vc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;flex-wrap:wrap}
-.vc-nm{font-weight:700;font-size:14px}
-.vc-org{font-size:11px;color:var(--t2);margin-top:1px}
+.vc-nm{font-weight:700;font-size:14px}.vc-org{font-size:11px;color:var(--t2);margin-top:1px}
 .badge{padding:3px 8px;border-radius:7px;font-size:9px;font-weight:700;text-transform:uppercase;white-space:nowrap}
-.badge.live{background:#dcfce7;color:#166534}
-.badge.upcoming{background:#fef3c7;color:#92400e}
-.badge.expected{background:#e0e7ff;color:#3730a3}
-.vc-r{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:12px}
-.vc-r span{display:flex;align-items:center;gap:3px}
-.vc-r strong{color:var(--dk)}
+.badge.live{background:#dcfce7;color:#166534}.badge.upcoming{background:#fef3c7;color:#92400e}.badge.expected{background:#e0e7ff;color:#3730a3}
+.vc-r{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:12px}.vc-r span{display:flex;align-items:center;gap:3px}.vc-r strong{color:var(--dk)}
 .vc-sal{color:var(--gn);font-weight:600}
-.vc-apply-status{margin-top:8px;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;display:inline-block}
-.apply-open{background:#dcfce7;color:#166534}
-.apply-closed{background:#fee2e2;color:#991b1b}
-.apply-soon{background:#e0e7ff;color:#3730a3}
+.as{margin-top:8px;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;display:inline-block}
+.as-o{background:#dcfce7;color:#166534}.as-c{background:#fee2e2;color:#991b1b}.as-s{background:#e0e7ff;color:#3730a3}
 .ea{font-size:10px;color:var(--t2);margin-top:6px;text-align:center}
-
 .vc-x{display:none;padding:0 16px 14px;font-size:12px;line-height:1.6;border-top:1px solid var(--bd)}
 .vc-x.open{display:block;padding-top:12px}
 .vc-x h4{font-size:11px;font-weight:700;color:var(--pk);margin:8px 0 4px;text-transform:uppercase}
-.vc-btns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-.vc-lk{padding:6px 14px;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;border:1.5px solid var(--pk);color:var(--pk);background:var(--card)}
-.vc-lk:hover{background:var(--pk);color:#fff}
-
+.vc-btns{display:flex;gap:8px;margin-top:10px}.vc-lk{padding:6px 14px;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;border:1.5px solid var(--pk);color:var(--pk);background:var(--card)}.vc-lk:hover{background:var(--pk);color:#fff}
+.nm{text-align:center;padding:24px;color:var(--t2);font-size:13px}
 .ai-bx{background:linear-gradient(135deg,#fef2f6,#fff5f8);border:1px solid #fce7ef;border-radius:10px;padding:16px}
-.ai-bx h3{font-size:14px;margin-bottom:4px}
-.ai-bx p{font-size:12px;color:var(--t2);margin-bottom:12px}
+.ai-bx h3{font-size:14px;margin-bottom:4px}.ai-bx p{font-size:12px;color:var(--t2);margin-bottom:12px}
 .ai-btn{padding:10px 20px;border:none;border-radius:8px;font-size:13px;font-weight:600;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff}
 .ai-btn:disabled{opacity:.5;cursor:not-allowed}
 .ai-res{margin-top:12px;padding:14px;background:var(--card);border-radius:8px;font-size:13px;line-height:1.7;white-space:pre-wrap;border:1px solid var(--bd)}
-
 .pt{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
-.ptl{background:var(--bg);padding:10px;border-radius:7px;text-align:center}
-.ptl b{font-size:11px;color:var(--dk);display:block}
-.ptl a{color:var(--pk);font-weight:600;text-decoration:none;font-size:10px}
+.ptl{background:var(--bg);padding:10px;border-radius:7px;text-align:center}.ptl b{font-size:11px;color:var(--dk);display:block}.ptl a{color:var(--pk);font-weight:600;text-decoration:none;font-size:10px}
 .disc{padding:10px;background:#fef3c7;border-radius:7px;font-size:11px;color:#78350f;margin-top:12px;line-height:1.5}
-.nm{text-align:center;padding:24px;color:var(--t2);font-size:13px}
 @media(max-width:640px){.fg,.pt{grid-template-columns:1fr}.cta{flex-direction:column;text-align:center}}
 </style>
 </head>
@@ -96,380 +81,311 @@ button{font-family:inherit;cursor:pointer;transition:all .15s}
 <div class="hdr">
   <div class="hdr-l">
     <img src="Logo_White.png" alt="Testbook" class="logo" onerror="this.style.display='none'">
-    <h1 data-t="hdr">Assistant <b>Professor</b> Vacancy Finder</h1>
+    <h1 data-t="hdr">Assistant <b>Professor</b> Pathway Finder</h1>
   </div>
   <button class="lang" onclick="tL()" id="lb">हिंदी</button>
 </div>
 
 <div class="wrap">
-<!-- SEC 1: Profile + Name/Phone -->
+<!-- SECTION 1: 8-field form -->
 <div class="sec">
   <div class="sh"><div class="n">1</div><h2 data-t="s1">Your Profile</h2></div>
   <div class="sb"><div class="fg">
-    <div class="f"><label data-t="ln">Full Name</label><input type="text" id="uN" maxlength="50"></div>
-    <div class="f"><label data-t="lp">Phone (10 digits)</label>
-      <div class="pw"><input type="tel" id="uP" maxlength="10" inputmode="numeric"><button onclick="tPh()" id="pTg" data-t="shw">Show</button></div>
-      <div class="err" id="pEr" data-t="perr">Enter valid 10-digit number starting with 6-9</div>
-    </div>
-    <div class="f"><label data-t="ls">Subject (UGC NET Qualified)</label><select id="uS"></select></div>
-    <div class="f"><label data-t="lc">Category</label><select id="uC"></select></div>
-    <div class="f"><label data-t="lst">Preferred State</label><select id="uSt"></select></div>
-    <div class="f"><label data-t="lg">Geography</label><select id="uG"></select></div>
-    <div class="br"><button class="br2" onclick="rA()" data-t="rst">Reset</button><button class="bp" onclick="go()" data-t="btn">Show AP Vacancies →</button></div>
+    <div class="f"><label data-t="l1">UGC NET Status</label><select id="f1"></select></div>
+    <div class="f"><label data-t="l2">Subject (UGC NET)</label><select id="f2"></select></div>
+    <div class="f"><label data-t="l3">Category</label><select id="f3"></select></div>
+    <div class="f"><label data-t="l4">Master's Marks</label><select id="f4"></select></div>
+    <div class="f"><label data-t="l5">PhD Status</label><select id="f5"></select></div>
+    <div class="f"><label data-t="l6">Home State</label><select id="f6"></select></div>
+    <div class="f"><label data-t="l7">Geography Preference</label><select id="f7"></select></div>
+    <div class="f"><label data-t="l8">Institution Type</label><select id="f8"></select></div>
+    <div class="br"><button class="br2" onclick="rA()" data-t="rst">Reset</button><button class="bp" onclick="openModal()" data-t="btn">Analyze My Pathway →</button></div>
   </div></div>
 </div>
 
-<!-- RESULTS (hidden until go) -->
+<!-- RESULTS (hidden until submit) -->
 <div id="R" style="display:none">
   <div class="cta"><div class="cta-t"><h3 data-t="ct1">📚 Start Your Preparation</h3><p data-t="ct2">UGC NET & AP coaching by Testbook Supercoaching</p></div><a class="cta-b" href="https://testbook.com/assistant-professor-lectureship-ugc-coaching" target="_blank" data-t="ct3">Explore Courses →</a></div>
   <div class="sec"><div class="sh"><div class="n">2</div><h2 data-t="s2">AP Vacancies For You</h2></div><div class="sb" id="VB"></div></div>
   <div class="sec"><div class="sh"><div class="n">3</div><h2 data-t="s3">🤖 AI Personalized Plan</h2></div><div class="sb"><div class="ai-bx"><h3 data-t="ai1">Get a customized strategy</h3><p data-t="ai2">Based on your profile — powered by AI</p><button class="ai-btn" id="aB" onclick="gP()" data-t="ai3">Generate My Plan →</button><div id="aR"></div></div></div></div>
   <div class="cta"><div class="cta-t"><h3 data-t="ct4">🎯 Ready to Crack It?</h3><p data-t="ct5">Join 10 lakh+ aspirants on Testbook</p></div><a class="cta-b" href="https://testbook.com/assistant-professor-lectureship-ugc-coaching" target="_blank" data-t="ct6">Start Preparation →</a></div>
-  <div class="sec"><div class="sh"><div class="n">ℹ</div><h2 data-t="s4">Key Portals to Monitor</h2></div><div class="sb"><div class="pt"><div class="ptl"><b>UGC</b><a href="https://www.ugc.gov.in" target="_blank">ugc.gov.in</a></div><div class="ptl"><b>UGC NET</b><a href="https://ugcnet.nta.ac.in" target="_blank">ugcnet.nta.ac.in</a></div><div class="ptl"><b>UPHESC</b><a href="https://uphesc.org" target="_blank">uphesc.org</a></div><div class="ptl"><b>UPPSC</b><a href="https://uppsc.up.nic.in" target="_blank">uppsc.up.nic.in</a></div><div class="ptl"><b>RPSC</b><a href="https://rpsc.rajasthan.gov.in" target="_blank">rpsc.rajasthan.gov.in</a></div><div class="ptl"><b data-t="empn">Emp. News</b><a href="https://employmentnews.gov.in" target="_blank">employmentnews.gov.in</a></div></div><div class="disc" data-t="disc">⚠ Vacancy data based on public notifications as of April 2026. Always verify from official notification before applying.</div></div></div>
+  <div class="sec"><div class="sh"><div class="n">ℹ</div><h2 data-t="s4">Key Portals</h2></div><div class="sb"><div class="pt"><div class="ptl"><b>UGC</b><a href="https://www.ugc.gov.in" target="_blank">ugc.gov.in</a></div><div class="ptl"><b>UGC NET</b><a href="https://ugcnet.nta.ac.in" target="_blank">ugcnet.nta.ac.in</a></div><div class="ptl"><b>UPHESC</b><a href="https://uphesc.org" target="_blank">uphesc.org</a></div><div class="ptl"><b>UPPSC</b><a href="https://uppsc.up.nic.in" target="_blank">uppsc.up.nic.in</a></div><div class="ptl"><b>RPSC</b><a href="https://rpsc.rajasthan.gov.in" target="_blank">rpsc.rajasthan.gov.in</a></div><div class="ptl"><b data-t="empn">Emp. News</b><a href="https://employmentnews.gov.in" target="_blank">employmentnews.gov.in</a></div></div><div class="disc" data-t="disc">⚠ Vacancy data based on public notifications as of April 2026. Always verify from official notification.</div></div></div>
 </div>
+</div>
+
+<!-- NAME + PHONE MODAL -->
+<div class="mo" id="modal">
+  <div class="mo-box">
+    <h3 data-t="mt">Almost there!</h3>
+    <p data-t="md">Enter your details to see personalized AP vacancies</p>
+    <div class="f"><label data-t="mn">Full Name</label><input type="text" id="mN" maxlength="50" placeholder=""></div>
+    <div class="f"><label data-t="mp">Phone Number (10 digits)</label>
+      <div class="pw"><input type="password" id="mP" maxlength="10" inputmode="numeric"><button onclick="tPh()" id="pTg" data-t="shw">Show</button></div>
+      <div class="mo-err" id="pEr" data-t="perr">Enter valid 10-digit number starting with 6-9</div>
+    </div>
+    <div class="mo-btns"><button class="btn-c" onclick="closeModal()" data-t="cancel">Cancel</button><button class="bp" onclick="submit()" style="flex:1" data-t="submit">Show My Results →</button></div>
+  </div>
 </div>
 
 <script>
-const SB_U='https://eureifhaekrqrrkbzkeg.supabase.co';
-const SB_K='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1cmVpZmhhZWtycXJya2J6a2VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NzI2ODAsImV4cCI6MjA5MTI0ODY4MH0.rLkAH9kcDSs26R4L9lMd8BS9znRdX8TP2wbK1DCR_x0';
+// ===== SUPABASE CONFIG =====
+const SB_U='https://nuyzbloaokmggnjtbtxb.supabase.co';
+const SB_K='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51eXpibG9hb2ttZ2duanRidHhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2ODMzMDcsImV4cCI6MjA5MjI1OTMwN30.PVU35MaiaHUSQ6yOgrNj0QgoaEgKmSGzGjhlRD--LEM';
 
-let L='en', pMask=false, fl='all';
+let L='en', fl='all';
 
-// --- TRANSLATIONS ---
-const TX = {
-  en: {
-    hdr:'Assistant <b>Professor</b> Vacancy Finder', lb:'हिंदी',
-    s1:'Your Profile', ln:'Full Name', lp:'Phone (10 digits)',
-    ls:'Subject (UGC NET Qualified)', lc:'Category', lst:'Preferred State', lg:'Geography',
-    rst:'Reset', btn:'Show AP Vacancies →', shw:'Show', hid:'Hide',
-    perr:'Enter valid 10-digit number starting with 6-9',
-    sel:'-- Select --',
-    gen:'General / EWS', obc:'OBC-NCL', sc:'SC', st:'ST', pwd:'PwD',
-    home:'Home state only', any:'Anywhere in India',
-    ct1:'📚 Start Your Preparation', ct2:'UGC NET & AP coaching by Testbook Supercoaching', ct3:'Explore Courses →',
-    s2:'AP Vacancies For You',
-    s3:'🤖 AI Personalized Plan', ai1:'Get a customized strategy', ai2:'Based on your profile — powered by AI', ai3:'Generate My Plan →',
-    ct4:'🎯 Ready to Crack It?', ct5:'Join 10 lakh+ aspirants on Testbook', ct6:'Start Preparation →',
-    s4:'Key Portals to Monitor', empn:'Emp. News',
-    disc:'⚠ Vacancy data based on public notifications as of April 2026. Always verify from official notification before applying.',
-    all:'All', active:'🟢 Active', upcoming:'🟡 Upcoming', expected:'🔵 Expected',
-    ACTIVE:'🟢 ACTIVE', UPCOMING:'🟡 UPCOMING', EXPECTED:'🔵 EXPECTED',
-    posts:'Posts', salary:'Salary', timeline:'Timeline',
-    apply_open:'✅ Can Apply Now', apply_closed:'🔴 Applications Closed', apply_soon:'🔵 Coming Soon — Watch for Notification',
-    expand:'▼ Tap for full details, subjects & eligibility',
-    official:'Official Portal ↗',
-    noMatch:'No vacancies match your filter. Try "All" or "Anywhere in India".',
-    fillAll:'Please fill all 6 fields.',
-    nameErr:'Please enter your full name.',
-    gen_txt:'Generating...', gen_done:'Generate My Plan →',
-    ai_wait:'⏳ Creating your personalized plan...',
-    ai_fail:'⚠ AI requires ANTHROPIC_API_KEY on Vercel. Profile saved.',
-  },
-  hi: {
-    hdr:'सहायक <b>प्राध्यापक</b> रिक्ति खोजक', lb:'English',
-    s1:'आपकी प्रोफ़ाइल', ln:'पूरा नाम', lp:'फोन (10 अंक)',
-    ls:'विषय (UGC NET उत्तीर्ण)', lc:'श्रेणी', lst:'पसंदीदा राज्य', lg:'भूगोल',
-    rst:'रीसेट', btn:'AP रिक्तियां दिखाएं →', shw:'दिखाएं', hid:'छुपाएं',
-    perr:'6-9 से शुरू होने वाला वैध 10 अंकों का नंबर दर्ज करें',
-    sel:'-- चुनें --',
-    gen:'सामान्य / EWS', obc:'OBC-NCL', sc:'SC', st:'ST', pwd:'PwD',
-    home:'केवल गृह राज्य', any:'पूरे भारत में कहीं भी',
-    ct1:'📚 तैयारी शुरू करें', ct2:'Testbook Supercoaching द्वारा UGC NET और AP कोचिंग', ct3:'कोर्स देखें →',
-    s2:'आपके लिए AP रिक्तियां',
-    s3:'🤖 AI व्यक्तिगत योजना', ai1:'अनुकूलित रणनीति प्राप्त करें', ai2:'आपकी प्रोफ़ाइल के आधार पर — AI द्वारा', ai3:'मेरी योजना बनाएं →',
-    ct4:'🎯 क्या आप तैयार हैं?', ct5:'Testbook पर 10 लाख+ अभ्यर्थियों से जुड़ें', ct6:'तैयारी शुरू करें →',
-    s4:'निगरानी के लिए प्रमुख पोर्टल', empn:'रोजगार समाचार',
-    disc:'⚠ रिक्ति डेटा अप्रैल 2026 तक सार्वजनिक अधिसूचनाओं पर आधारित। आवेदन से पहले हमेशा आधिकारिक अधिसूचना से सत्यापित करें।',
-    all:'सभी', active:'🟢 सक्रिय', upcoming:'🟡 आगामी', expected:'🔵 अपेक्षित',
-    ACTIVE:'🟢 सक्रिय', UPCOMING:'🟡 आगामी', EXPECTED:'🔵 अपेक्षित',
-    posts:'पद', salary:'वेतन', timeline:'समयरेखा',
-    apply_open:'✅ अभी आवेदन कर सकते हैं', apply_closed:'🔴 आवेदन बंद', apply_soon:'🔵 जल्द आ रहा है — अधिसूचना देखें',
-    expand:'▼ पूर्ण विवरण, विषय और पात्रता के लिए टैप करें',
-    official:'आधिकारिक पोर्टल ↗',
-    noMatch:'कोई रिक्ति मेल नहीं खाती। "सभी" या "पूरे भारत" आज़माएं।',
-    fillAll:'कृपया सभी 6 फ़ील्ड भरें।',
-    nameErr:'कृपया अपना पूरा नाम दर्ज करें।',
-    gen_txt:'बना रहे हैं...', gen_done:'मेरी योजना बनाएं →',
-    ai_wait:'⏳ आपकी व्यक्तिगत योजना बना रहे हैं...',
-    ai_fail:'⚠ AI के लिए Vercel पर ANTHROPIC_API_KEY चाहिए।',
-  }
-};
-function t(k){ return TX[L][k] || k; }
+// ===== TRANSLATIONS =====
+const TX={
+en:{
+  hdr:'Assistant <b>Professor</b> Pathway Finder',lb:'हिंदी',
+  s1:'Your Profile',
+  l1:'UGC NET Status',l2:'Subject (UGC NET)',l3:'Category',l4:"Master's Marks",l5:'PhD Status',l6:'Home State',l7:'Geography Preference',l8:'Institution Type',
+  rst:'Reset',btn:'Analyze My Pathway →',
+  // NET status options
+  n1:'UGC NET — AP Qualified',n2:'UGC NET — JRF + AP',n3:'Planning to appear',n4:'Appeared, preparing again',
+  // Category
+  gen:'General / EWS',obc:'OBC-NCL',sc:'SC',st:'ST',pwd:'PwD',
+  // Marks
+  m1:'Below 50%',m2:'50 – 54.99%',m3:'55% and above',
+  // PhD
+  p1:'Not pursuing',p2:'Ongoing',p3:'Awarded (UGC compliant)',
+  // Geo
+  g1:'Only home state',g2:'Home + neighbouring',g3:'Anywhere in India',
+  // Inst
+  i1:'Central Universities',i2:'State Univ / Govt Colleges',i3:'Any (incl. private)',
+  sel:'-- Select --',
+  // Modal
+  mt:'Almost there!',md:'Enter your details to see personalized AP vacancies',mn:'Full Name',mp:'Phone Number (10 digits)',
+  shw:'Show',hid:'Hide',perr:'Enter valid 10-digit number starting with 6-9',cancel:'Cancel',submit:'Show My Results →',
+  nameErr:'Please enter your full name.',fillAll:'Please fill all 8 fields first.',
+  // Results
+  ct1:'📚 Start Your Preparation',ct2:'UGC NET & AP coaching by Testbook Supercoaching',ct3:'Explore Courses →',
+  s2:'AP Vacancies For You',s3:'🤖 AI Personalized Plan',ai1:'Get a customized strategy',ai2:'Based on your profile — powered by AI',ai3:'Generate My Plan →',
+  ct4:'🎯 Ready to Crack It?',ct5:'Join 10 lakh+ aspirants on Testbook',ct6:'Start Preparation →',
+  s4:'Key Portals',empn:'Emp. News',disc:'⚠ Vacancy data based on public notifications as of April 2026. Always verify from official notification.',
+  all:'All',active:'🟢 Active',upcoming:'🟡 Upcoming',expected:'🔵 Expected',
+  ACTIVE:'🟢 ACTIVE',UPCOMING:'🟡 UPCOMING',EXPECTED:'🔵 EXPECTED',
+  posts:'Posts',salary:'Salary',timeline:'Timeline',
+  ao:'✅ Can Apply Now',ac:'🔴 Applications Closed',as:'🔵 Coming Soon',
+  expand:'▼ Tap for full details & subject-wise vacancies',official:'Official Portal ↗',
+  noMatch:'No vacancies match. Try "All" or change geography.',
+  gen_txt:'Generating...',ai_wait:'⏳ Creating your plan...',ai_fail:'⚠ AI requires ANTHROPIC_API_KEY on Vercel.',
+},
+hi:{
+  hdr:'सहायक <b>प्राध्यापक</b> पाथवे फाइंडर',lb:'English',
+  s1:'आपकी प्रोफ़ाइल',
+  l1:'UGC NET स्थिति',l2:'विषय (UGC NET)',l3:'श्रेणी',l4:'मास्टर्स अंक',l5:'PhD स्थिति',l6:'गृह राज्य',l7:'भूगोल प्राथमिकता',l8:'संस्थान प्रकार',
+  rst:'रीसेट',btn:'मेरा पाथवे खोजें →',
+  n1:'UGC NET — AP उत्तीर्ण',n2:'UGC NET — JRF + AP',n3:'परीक्षा देने की योजना',n4:'पहले दिया, फिर तैयारी',
+  gen:'सामान्य / EWS',obc:'OBC-NCL',sc:'SC',st:'ST',pwd:'PwD',
+  m1:'50% से कम',m2:'50 – 54.99%',m3:'55% और अधिक',
+  p1:'नहीं कर रहे',p2:'जारी है',p3:'प्राप्त (UGC अनुपालन)',
+  g1:'केवल गृह राज्य',g2:'गृह + पड़ोसी राज्य',g3:'पूरे भारत में',
+  i1:'केंद्रीय विश्वविद्यालय',i2:'राज्य विश्व / सरकारी कॉलेज',i3:'कोई भी (निजी सहित)',
+  sel:'-- चुनें --',
+  mt:'लगभग तैयार!',md:'व्यक्तिगत AP रिक्तियां देखने के लिए विवरण दर्ज करें',mn:'पूरा नाम',mp:'फोन नंबर (10 अंक)',
+  shw:'दिखाएं',hid:'छुपाएं',perr:'6-9 से शुरू, वैध 10 अंक दर्ज करें',cancel:'रद्द',submit:'मेरे परिणाम दिखाएं →',
+  nameErr:'कृपया अपना पूरा नाम दर्ज करें।',fillAll:'कृपया पहले सभी 8 फ़ील्ड भरें।',
+  ct1:'📚 तैयारी शुरू करें',ct2:'Testbook Supercoaching द्वारा UGC NET और AP कोचिंग',ct3:'कोर्स देखें →',
+  s2:'आपके लिए AP रिक्तियां',s3:'🤖 AI व्यक्तिगत योजना',ai1:'अनुकूलित रणनीति',ai2:'आपकी प्रोफ़ाइल के आधार पर',ai3:'मेरी योजना बनाएं →',
+  ct4:'🎯 क्या आप तैयार हैं?',ct5:'Testbook पर 10 लाख+ अभ्यर्थी',ct6:'तैयारी शुरू करें →',
+  s4:'प्रमुख पोर्टल',empn:'रोजगार समाचार',disc:'⚠ रिक्ति डेटा अप्रैल 2026 तक। आवेदन से पहले आधिकारिक अधिसूचना से सत्यापित करें।',
+  all:'सभी',active:'🟢 सक्रिय',upcoming:'🟡 आगामी',expected:'🔵 अपेक्षित',
+  ACTIVE:'🟢 सक्रिय',UPCOMING:'🟡 आगामी',EXPECTED:'🔵 अपेक्षित',
+  posts:'पद',salary:'वेतन',timeline:'समयरेखा',
+  ao:'✅ अभी आवेदन करें',ac:'🔴 आवेदन बंद',as:'🔵 जल्द आ रहा है',
+  expand:'▼ पूर्ण विवरण और विषयवार रिक्तियां देखें',official:'आधिकारिक पोर्टल ↗',
+  noMatch:'कोई रिक्ति मेल नहीं खाती। "सभी" या भूगोल बदलें।',
+  gen_txt:'बना रहे हैं...',ai_wait:'⏳ आपकी योजना बना रहे हैं...',ai_fail:'⚠ AI के लिए Vercel पर ANTHROPIC_API_KEY चाहिए।',
+}};
+function t(k){return TX[L][k]||k}
 
-// --- SUBJECTS ---
-const SUBS_EN=['Economics','Political Science','Philosophy','Psychology','Sociology','History','Commerce','Management','Geography','Social Work','Education','Physical Education','Hindi','English','Sanskrit','Urdu','Bengali','Gujarati','Kannada','Malayalam','Marathi','Odia','Punjabi','Tamil','Telugu','Law','Public Administration','Home Science','Mass Communication','Computer Science','Library Science','Environmental Sciences','Music','Yoga','Linguistics','Others'];
+// ===== DROPDOWN DATA =====
+const SUBS=['Economics','Political Science','Philosophy','Psychology','Sociology','History','Commerce','Management','Geography','Social Work','Education','Physical Education','Hindi','English','Sanskrit','Urdu','Bengali','Gujarati','Kannada','Malayalam','Marathi','Odia','Punjabi','Tamil','Telugu','Law','Public Administration','Home Science','Mass Communication','Computer Science','Library Science','Environmental Sciences','Music','Yoga','Linguistics','Others'];
 const SUBS_HI=['अर्थशास्त्र','राजनीति विज्ञान','दर्शनशास्त्र','मनोविज्ञान','समाजशास्त्र','इतिहास','वाणिज्य','प्रबंधन','भूगोल','समाज कार्य','शिक्षा','शारीरिक शिक्षा','हिंदी','अंग्रेज़ी','संस्कृत','उर्दू','बांग्ला','गुजराती','कन्नड़','मलयालम','मराठी','ओड़िया','पंजाबी','तमिल','तेलुगु','विधि','लोक प्रशासन','गृह विज्ञान','जनसंचार','कंप्यूटर विज्ञान','पुस्तकालय विज्ञान','पर्यावरण विज्ञान','संगीत','योग','भाषाविज्ञान','अन्य'];
+const STV=['ALL','UP','MH','WB','RJ','MP','BR','KA','TN','GJ','AP','TS','KL','OD','PB','HR','HP','JH','CG','NE','DL'];
+const STE=['All India','Uttar Pradesh','Maharashtra','West Bengal','Rajasthan','Madhya Pradesh','Bihar','Karnataka','Tamil Nadu','Gujarat','Andhra Pradesh','Telangana','Kerala','Odisha','Punjab','Haryana','Himachal Pradesh','Jharkhand','Chhattisgarh','North-East','Delhi'];
+const STH=['पूरा भारत','उत्तर प्रदेश','महाराष्ट्र','पश्चिम बंगाल','राजस्थान','मध्य प्रदेश','बिहार','कर्नाटक','तमिलनाडु','गुजरात','आंध्र प्रदेश','तेलंगाना','केरल','ओडिशा','पंजाब','हरियाणा','हिमाचल प्रदेश','झारखंड','छत्तीसगढ़','पूर्वोत्तर','दिल्ली'];
 
-const STATES_EN=['All India','Uttar Pradesh','Maharashtra','West Bengal','Rajasthan','Madhya Pradesh','Bihar','Karnataka','Tamil Nadu','Gujarat','Andhra Pradesh','Telangana','Kerala','Odisha','Punjab','Haryana','Himachal Pradesh','Jharkhand','Chhattisgarh','North-East','Delhi'];
-const STATES_HI=['पूरा भारत','उत्तर प्रदेश','महाराष्ट्र','पश्चिम बंगाल','राजस्थान','मध्य प्रदेश','बिहार','कर्नाटक','तमिलनाडु','गुजरात','आंध्र प्रदेश','तेलंगाना','केरल','ओडिशा','पंजाब','हरियाणा','हिमाचल प्रदेश','झारखंड','छत्तीसगढ़','पूर्वोत्तर','दिल्ली'];
-const STATES_V=['ALL','UP','MH','WB','RJ','MP','BR','KA','TN','GJ','AP','TS','KL','OD','PB','HR','HP','JH','CG','NE','DL'];
-
-// --- VACANCIES (ALL require NET/SET) ---
-// canApply: 'open' | 'closed' | 'soon'
-const VAC = [
-  {id:1,st:'UP',sn:{en:'UTTAR PRADESH',hi:'उत्तर प्रदेश'},tp:'live',org:'UPHESC / UPESSC',
-   nm:{en:'Assistant Professor (Advt. 51)',hi:'सहायक प्राध्यापक (विज्ञापन 51)'},
-   p:917,sal:'₹57,700 – ₹1,82,400',
-   tl:{en:'Exam: 18-19 Apr 2026',hi:'परीक्षा: 18-19 अप्रैल 2026'},
-   ss:{en:'Admit cards out. Exam in progress.',hi:'प्रवेश पत्र जारी। परीक्षा जारी है।'},
-   ca:'closed', lk:'https://uphesc.org',
-   d:{en:'<h4>Eligibility (NET/SET Mandatory)</h4>Master\'s 55% (50% reserved) + <b>UGC NET/SET or UGC PhD</b><h4>Subject-wise (917 posts)</h4>Hindi: 95 | English: 68 | Pol. Science: 72 | Economics: 64 | History: 58 | Geography: 52 | Sociology: 48 | Commerce: 44 | Psychology: 38 | Sanskrit: 35 | Philosophy: 28 | Education: 25 | Home Sc: 22 | Law: 20 | + 39 more<h4>Pattern</h4>150 MCQs | 2 hrs | Subject-specific | No negative marking<h4>Selection</h4>Written → Interview (15 marks) → Doc Verification<h4>Salary (7th CPC Level 10)</h4>₹57,700 basic + DA + HRA + Medical. Gross ~₹95,000-1,10,000/month',
-       hi:'<h4>पात्रता (NET/SET अनिवार्य)</h4>मास्टर्स 55% (आरक्षित 50%) + <b>UGC NET/SET या UGC PhD</b><h4>विषयवार (917 पद)</h4>हिंदी: 95 | अंग्रेजी: 68 | राजनीति विज्ञान: 72 | अर्थशास्त्र: 64 | इतिहास: 58 | भूगोल: 52 | समाजशास्त्र: 48 | वाणिज्य: 44 | मनोविज्ञान: 38 | संस्कृत: 35 | + अन्य<h4>वेतन (7वां CPC स्तर 10)</h4>₹57,700 मूल + DA + HRA। सकल ~₹95,000-1,10,000/माह'}},
-  {id:2,st:'UP',sn:{en:'UTTAR PRADESH',hi:'उत्तर प्रदेश'},tp:'upcoming',org:'UPPSC',
-   nm:{en:'Assistant Professor – Govt Degree Colleges',hi:'सहायक प्राध्यापक – सरकारी डिग्री कॉलेज'},
-   p:1253,sal:'₹57,700 – ₹1,82,400',
-   tl:{en:'Prelim: 31 May 2026 | Main: Sep-Oct 2026',hi:'प्रारंभिक: 31 मई 2026 | मुख्य: सितम्बर-अक्टूबर 2026'},
-   ss:{en:'Largest AP drive in India. Prelim date announced.',hi:'भारत का सबसे बड़ा AP अभियान। प्रारंभिक तिथि घोषित।'},
-   ca:'closed', lk:'https://uppsc.up.nic.in',
-   d:{en:'<h4>Eligibility (NET/SET Mandatory)</h4>Master\'s 55% + <b>UGC NET/SET or PhD</b><h4>Total: 1,253 posts</h4>All subjects across UP Govt Degree Colleges<h4>Pattern</h4>Prelim (qualifying): GS + Subject | Main: Descriptive | Interview<h4>⚡ Key</h4>2,506 total UP AP posts (UPHESC+UPPSC combined) — largest in India',
-       hi:'<h4>पात्रता (NET/SET अनिवार्य)</h4>मास्टर्स 55% + <b>UGC NET/SET या PhD</b><h4>कुल: 1,253 पद</h4>UP सरकारी डिग्री कॉलेजों में सभी विषय<h4>⚡ महत्वपूर्ण</h4>भारत में सबसे बड़ी AP भर्ती — 2,506 कुल पद (UPHESC+UPPSC)'}},
-  {id:3,st:'RJ',sn:{en:'RAJASTHAN',hi:'राजस्थान'},tp:'live',org:'RPSC',
-   nm:{en:'Assistant Professor – College Education',hi:'सहायक प्राध्यापक – कॉलेज शिक्षा'},
-   p:574,sal:'₹57,700 – ₹1,82,400',
-   tl:{en:'Exam: Dec 2025 | Answer key: Jan 2026 | Result awaited',hi:'परीक्षा: दिसंबर 2025 | उत्तर कुंजी: जनवरी 2026 | परिणाम प्रतीक्षित'},
-   ss:{en:'Answer key released. Results expected soon.',hi:'उत्तर कुंजी जारी। परिणाम जल्द अपेक्षित।'},
-   ca:'closed', lk:'https://rpsc.rajasthan.gov.in',
-   d:{en:'<h4>Eligibility (NET/SET Mandatory)</h4>Master\'s 55% + <b>UGC NET/SET or PhD</b> + Hindi in Devanagari<h4>Subject-wise (574 posts)</h4>Geography: 60 | Hindi: 58 | Chemistry: 55 | Pol Sci: 52 | Botany: 42 | Zoology: 38 | History: 31 | Sanskrit: 26 | Sociology: 24 | Maths: 24 | Economics: 23 | English: 21 | + more<h4>Age</h4>Max 37 (5yr SC/ST, 3yr OBC relaxation)',
-       hi:'<h4>पात्रता (NET/SET अनिवार्य)</h4>मास्टर्स 55% + <b>UGC NET/SET या PhD</b> + हिंदी देवनागरी<h4>विषयवार (574 पद)</h4>भूगोल: 60 | हिंदी: 58 | रसायन: 55 | राजनीति: 52 | वनस्पति: 42 | + अन्य'}},
-  {id:4,st:'ALL',sn:{en:'ALL INDIA',hi:'पूरा भारत'},tp:'live',org:'NCERT',
-   nm:{en:'Professor / Assoc. Prof / Asst. Prof (Advt. 177)',hi:'प्रोफेसर / एसोसिएट / सहायक प्राध्यापक (विज्ञापन 177)'},
-   p:117,sal:'₹57,700 – ₹2,18,200',
-   tl:{en:'Check ncert.nic.in for dates',hi:'तिथियों के लिए ncert.nic.in देखें'},
-   ss:{en:'National level. Multiple posts open.',hi:'राष्ट्रीय स्तर। अनेक पद खुले।'},
-   ca:'open', lk:'https://ncert.nic.in',
-   d:{en:'<h4>Eligibility (NET/PhD Required)</h4>Master\'s + <b>UGC NET or PhD</b>. Experience for higher posts.<h4>117 posts</h4>Education, Science, Social Science, Languages<h4>Posting</h4>Any NCERT institute across India',
-       hi:'<h4>पात्रता (NET/PhD आवश्यक)</h4>मास्टर्स + <b>UGC NET या PhD</b><h4>117 पद</h4>शिक्षा, विज्ञान, सामाजिक विज्ञान, भाषाएं'}},
-  {id:5,st:'WB',sn:{en:'WEST BENGAL',hi:'पश्चिम बंगाल'},tp:'expected',org:'WBCSC',
-   nm:{en:'Assistant Professor – State Colleges',hi:'सहायक प्राध्यापक – राज्य कॉलेज'},
-   p:0,sal:'₹57,700 – ₹1,82,400',
-   tl:{en:'Expected: 2026',hi:'अपेक्षित: 2026'},
-   ss:{en:'Annual recruitment. Watch for notification.',hi:'वार्षिक भर्ती। अधिसूचना देखें।'},
-   ca:'soon', lk:'https://www.wbcsconline.in',
-   d:{en:'<h4>Eligibility (NET/WB-SET Required)</h4>Master\'s 55% + <b>UGC NET/WB SET or PhD</b><h4>Coverage</h4>All govt-aided colleges in WB<h4>Tip</h4>WB SET → direct WBCSC AP pipeline',
-       hi:'<h4>पात्रता (NET/WB-SET आवश्यक)</h4>मास्टर्स 55% + <b>UGC NET/WB SET या PhD</b>'}},
-  {id:6,st:'BR',sn:{en:'BIHAR',hi:'बिहार'},tp:'expected',org:'BSUSC',
-   nm:{en:'Assistant Professor – State Universities',hi:'सहायक प्राध्यापक – राज्य विश्वविद्यालय'},
-   p:0,sal:'₹57,700 – ₹1,82,400',
-   tl:{en:'Expected: 2026',hi:'अपेक्षित: 2026'},
-   ss:{en:'Large drives historically (3000+ posts).',hi:'ऐतिहासिक रूप से बड़ी भर्ती (3000+ पद)।'},
-   ca:'soon', lk:'https://bsusc.bihar.gov.in',
-   d:{en:'<h4>Eligibility (NET Mandatory — No SET in Bihar)</h4>Master\'s 55% + <b>UGC NET or PhD</b><h4>History</h4>BSUSC: 3000+ posts in recent drives',
-       hi:'<h4>पात्रता (NET अनिवार्य — बिहार में कोई SET नहीं)</h4>मास्टर्स 55% + <b>UGC NET या PhD</b>'}},
-  {id:7,st:'MP',sn:{en:'MADHYA PRADESH',hi:'मध्य प्रदेश'},tp:'expected',org:'MPPSC',
-   nm:{en:'Assistant Professor – Govt Colleges',hi:'सहायक प्राध्यापक – सरकारी कॉलेज'},
-   p:0,sal:'₹57,700 – ₹1,82,400',
-   tl:{en:'Watch MPPSC portal',hi:'MPPSC पोर्टल देखें'},
-   ss:{en:'Exam-based recruitment.',hi:'परीक्षा आधारित भर्ती।'},
-   ca:'soon', lk:'https://www.mppsc.mp.gov.in',
-   d:{en:'<h4>Eligibility (NET/SET Required)</h4>Master\'s 55% + <b>UGC NET/SET or PhD</b>',
-       hi:'<h4>पात्रता (NET/SET आवश्यक)</h4>मास्टर्स 55% + <b>UGC NET/SET या PhD</b>'}},
-  {id:8,st:'KA',sn:{en:'KARNATAKA',hi:'कर्नाटक'},tp:'expected',org:'KPSC',
-   nm:{en:'Assistant Professor – First Grade Colleges',hi:'सहायक प्राध्यापक – प्रथम श्रेणी कॉलेज'},
-   p:0,sal:'₹57,700 – ₹1,82,400',
-   tl:{en:'Watch KPSC portal',hi:'KPSC पोर्टल देखें'},
-   ss:{en:'K-SET also accepted alongside NET.',hi:'NET के साथ K-SET भी स्वीकृत।'},
-   ca:'soon', lk:'https://kpsc.kar.nic.in',
-   d:{en:'<h4>Eligibility (NET/K-SET Required)</h4>Master\'s 55% + <b>UGC NET/K-SET or PhD</b>',
-       hi:'<h4>पात्रता (NET/K-SET आवश्यक)</h4>मास्टर्स 55% + <b>UGC NET/K-SET या PhD</b>'}},
-  {id:9,st:'MH',sn:{en:'MAHARASHTRA',hi:'महाराष्ट्र'},tp:'expected',org:{en:'Maharashtra Universities',hi:'महाराष्ट्र विश्वविद्यालय'},
-   nm:{en:'Assistant Professor – State Universities',hi:'सहायक प्राध्यापक – राज्य विश्वविद्यालय'},
-   p:0,sal:'₹57,700 – ₹1,82,400',
-   tl:{en:'Individual university notifications',hi:'व्यक्तिगत विश्वविद्यालय अधिसूचनाएं'},
-   ss:{en:'MH-SET valid in Maharashtra + Goa.',hi:'MH-SET महाराष्ट्र + गोवा में मान्य।'},
-   ca:'soon', lk:'https://setexam.unipune.ac.in',
-   d:{en:'<h4>Eligibility (NET/MH-SET Required)</h4>Master\'s 55% + <b>UGC NET/MH-SET or PhD</b><h4>Bonus</h4>MH-SET valid in Maharashtra AND Goa',
-       hi:'<h4>पात्रता (NET/MH-SET आवश्यक)</h4>मास्टर्स 55% + <b>UGC NET/MH-SET या PhD</b><h4>बोनस</h4>MH-SET महाराष्ट्र और गोवा दोनों में मान्य'}},
-  {id:10,st:'JH',sn:{en:'JHARKHAND',hi:'झारखंड'},tp:'expected',org:'JPSC',
-   nm:{en:'Assistant Professor',hi:'सहायक प्राध्यापक'},
-   p:0,sal:'₹57,700 – ₹1,82,400',
-   tl:{en:'Watch JPSC portal',hi:'JPSC पोर्टल देखें'},
-   ss:{en:'UGC NET mandatory. No SET in Jharkhand.',hi:'UGC NET अनिवार्य। झारखंड में कोई SET नहीं।'},
-   ca:'soon', lk:'https://www.jpsc.gov.in',
-   d:{en:'<h4>Eligibility (NET Required — No SET)</h4>Master\'s 55% + <b>UGC NET or PhD</b>',
-       hi:'<h4>पात्रता (NET आवश्यक — कोई SET नहीं)</h4>मास्टर्स 55% + <b>UGC NET या PhD</b>'}},
+// ===== VACANCIES (all require NET/SET) =====
+const VAC=[
+{id:1,st:'UP',sn:{en:'UTTAR PRADESH',hi:'उत्तर प्रदेश'},tp:'live',org:'UPHESC',nm:{en:'Assistant Professor (Advt. 51)',hi:'सहायक प्राध्यापक (विज्ञापन 51)'},p:917,sal:'₹57,700–₹1,82,400',tl:{en:'Exam: 18-19 Apr 2026',hi:'परीक्षा: 18-19 अप्रैल 2026'},ca:'closed',lk:'https://uphesc.org',
+d:{en:'<h4>Eligibility</h4>Master\'s 55% + <b>UGC NET/SET or PhD</b><h4>917 Posts — Subject-wise</h4>Hindi: 95 | English: 68 | Pol Sci: 72 | Economics: 64 | History: 58 | Geography: 52 | Sociology: 48 | Commerce: 44 | Psychology: 38 | Sanskrit: 35 | Philosophy: 28 | Education: 25 | Home Sc: 22 | Law: 20 | + 39 more<h4>Pattern</h4>150 MCQs | 2hrs | No negative marking<h4>Salary</h4>Level 10: ₹57,700 basic. Gross ~₹95K-1.1L/month',hi:'<h4>पात्रता</h4>मास्टर्स 55% + <b>UGC NET/SET या PhD</b><h4>917 पद</h4>हिंदी: 95 | अंग्रेजी: 68 | राजनीति: 72 | अर्थशास्त्र: 64 | इतिहास: 58 | + अन्य<h4>वेतन</h4>स्तर 10: ₹57,700 मूल। सकल ~₹95K-1.1L/माह'}},
+{id:2,st:'UP',sn:{en:'UTTAR PRADESH',hi:'उत्तर प्रदेश'},tp:'upcoming',org:'UPPSC',nm:{en:'AP – Govt Degree Colleges',hi:'AP – सरकारी डिग्री कॉलेज'},p:1253,sal:'₹57,700–₹1,82,400',tl:{en:'Prelim: 31 May 2026 | Main: Sep-Oct 2026',hi:'प्रारंभिक: 31 मई 2026 | मुख्य: सित-अक्टू 2026'},ca:'closed',lk:'https://uppsc.up.nic.in',
+d:{en:'<h4>Eligibility</h4>Master\'s 55% + <b>UGC NET/SET or PhD</b><h4>1,253 Posts</h4>All subjects across UP Govt Degree Colleges<h4>⚡ Largest AP drive in India</h4>Combined UP: 2,506 posts (UPHESC+UPPSC)',hi:'<h4>पात्रता</h4>मास्टर्स 55% + <b>UGC NET/SET या PhD</b><h4>1,253 पद</h4>⚡ भारत की सबसे बड़ी AP भर्ती — कुल 2,506 पद'}},
+{id:3,st:'RJ',sn:{en:'RAJASTHAN',hi:'राजस्थान'},tp:'live',org:'RPSC',nm:{en:'AP – College Education',hi:'AP – कॉलेज शिक्षा'},p:574,sal:'₹57,700–₹1,82,400',tl:{en:'Exam done Dec 2025 | Result awaited',hi:'परीक्षा दिसंबर 2025 | परिणाम प्रतीक्षित'},ca:'closed',lk:'https://rpsc.rajasthan.gov.in',
+d:{en:'<h4>Eligibility</h4>Master\'s 55% + <b>NET/SET or PhD</b> + Hindi in Devanagari<h4>574 Posts</h4>Geography: 60 | Hindi: 58 | Chemistry: 55 | Pol Sci: 52 | Botany: 42 | Zoology: 38 | History: 31 | + more<h4>Age</h4>Max 37 (relaxations for reserved)',hi:'<h4>पात्रता</h4>मास्टर्स 55% + <b>NET/SET या PhD</b><h4>574 पद</h4>भूगोल: 60 | हिंदी: 58 | रसायन: 55 | + अन्य'}},
+{id:4,st:'ALL',sn:{en:'ALL INDIA',hi:'पूरा भारत'},tp:'live',org:'NCERT',nm:{en:'Prof / Assoc Prof / Asst Prof',hi:'प्रोफेसर / एसो / सहायक प्राध्यापक'},p:117,sal:'₹57,700–₹2,18,200',tl:{en:'Check ncert.nic.in',hi:'ncert.nic.in देखें'},ca:'open',lk:'https://ncert.nic.in',
+d:{en:'<h4>Eligibility</h4>Master\'s + <b>UGC NET or PhD</b><h4>117 Posts</h4>Education, Science, Social Science, Languages<h4>Posting</h4>Any NCERT institute across India',hi:'<h4>पात्रता</h4>मास्टर्स + <b>UGC NET या PhD</b><h4>117 पद</h4>शिक्षा, विज्ञान, सामाजिक विज्ञान, भाषाएं'}},
+{id:5,st:'WB',sn:{en:'WEST BENGAL',hi:'पश्चिम बंगाल'},tp:'expected',org:'WBCSC',nm:{en:'AP – State Colleges',hi:'AP – राज्य कॉलेज'},p:0,sal:'₹57,700–₹1,82,400',tl:{en:'Expected 2026',hi:'अपेक्षित 2026'},ca:'soon',lk:'https://www.wbcsconline.in',
+d:{en:'<h4>Eligibility</h4>Master\'s 55% + <b>NET/WB SET or PhD</b><h4>Tip</h4>WB SET = direct WBCSC AP pipeline',hi:'<h4>पात्रता</h4>मास्टर्स 55% + <b>NET/WB SET या PhD</b>'}},
+{id:6,st:'BR',sn:{en:'BIHAR',hi:'बिहार'},tp:'expected',org:'BSUSC',nm:{en:'AP – State Universities',hi:'AP – राज्य विश्वविद्यालय'},p:0,sal:'₹57,700–₹1,82,400',tl:{en:'Expected 2026',hi:'अपेक्षित 2026'},ca:'soon',lk:'https://bsusc.bihar.gov.in',
+d:{en:'<h4>Eligibility</h4>Master\'s 55% + <b>UGC NET or PhD</b> (no SET in Bihar)<h4>History</h4>3000+ posts in recent drives',hi:'<h4>पात्रता</h4>मास्टर्स 55% + <b>UGC NET या PhD</b> (बिहार में कोई SET नहीं)'}},
+{id:7,st:'MP',sn:{en:'MADHYA PRADESH',hi:'मध्य प्रदेश'},tp:'expected',org:'MPPSC',nm:{en:'AP – Govt Colleges',hi:'AP – सरकारी कॉलेज'},p:0,sal:'₹57,700–₹1,82,400',tl:{en:'Watch MPPSC',hi:'MPPSC देखें'},ca:'soon',lk:'https://www.mppsc.mp.gov.in',
+d:{en:'<h4>Eligibility</h4>Master\'s 55% + <b>NET/SET or PhD</b>',hi:'<h4>पात्रता</h4>मास्टर्स 55% + <b>NET/SET या PhD</b>'}},
+{id:8,st:'KA',sn:{en:'KARNATAKA',hi:'कर्नाटक'},tp:'expected',org:'KPSC',nm:{en:'AP – First Grade Colleges',hi:'AP – प्रथम श्रेणी कॉलेज'},p:0,sal:'₹57,700–₹1,82,400',tl:{en:'Watch KPSC',hi:'KPSC देखें'},ca:'soon',lk:'https://kpsc.kar.nic.in',
+d:{en:'<h4>Eligibility</h4>Master\'s 55% + <b>NET/K-SET or PhD</b>',hi:'<h4>पात्रता</h4>मास्टर्स 55% + <b>NET/K-SET या PhD</b>'}},
+{id:9,st:'MH',sn:{en:'MAHARASHTRA',hi:'महाराष्ट्र'},tp:'expected',org:{en:'MH Universities',hi:'MH विश्वविद्यालय'},nm:{en:'AP – State Universities',hi:'AP – राज्य विश्वविद्यालय'},p:0,sal:'₹57,700–₹1,82,400',tl:{en:'Individual notifications',hi:'व्यक्तिगत अधिसूचनाएं'},ca:'soon',lk:'https://setexam.unipune.ac.in',
+d:{en:'<h4>Eligibility</h4>Master\'s 55% + <b>NET/MH-SET or PhD</b><h4>Bonus</h4>MH-SET valid in Maharashtra + Goa',hi:'<h4>पात्रता</h4>मास्टर्स 55% + <b>NET/MH-SET या PhD</b><h4>बोनस</h4>MH-SET महाराष्ट्र + गोवा में मान्य'}},
+{id:10,st:'JH',sn:{en:'JHARKHAND',hi:'झारखंड'},tp:'expected',org:'JPSC',nm:{en:'Assistant Professor',hi:'सहायक प्राध्यापक'},p:0,sal:'₹57,700–₹1,82,400',tl:{en:'Watch JPSC',hi:'JPSC देखें'},ca:'soon',lk:'https://www.jpsc.gov.in',
+d:{en:'<h4>Eligibility</h4>Master\'s 55% + <b>UGC NET or PhD</b> (no SET)',hi:'<h4>पात्रता</h4>मास्टर्स 55% + <b>UGC NET या PhD</b>'}},
 ];
 
-// --- LANGUAGE TOGGLE ---
-function tL() {
-  L = L === 'en' ? 'hi' : 'en';
-  // Update all data-t elements
-  document.querySelectorAll('[data-t]').forEach(el => {
-    const k = el.getAttribute('data-t');
-    if (TX[L][k]) {
-      if (k === 'hdr') el.innerHTML = TX[L][k];
-      else el.textContent = TX[L][k];
-    }
+// ===== BUILD ALL SELECTS =====
+function buildSelects(){
+  const s = L==='en' ? SUBS : SUBS_HI;
+  const st = L==='en' ? STE : STH;
+  const sel = t('sel');
+
+  // f1: NET status
+  fillSel('f1',[{v:'ugc-ap',l:t('n1')},{v:'ugc-jrf',l:t('n2')},{v:'planning',l:t('n3')},{v:'appeared',l:t('n4')}],sel);
+  // f2: Subject
+  const f2=document.getElementById('f2'), v2=f2.value;
+  f2.innerHTML=`<option value="">${sel}</option>`;
+  s.forEach((x,i)=>{const o=document.createElement('option');o.value=SUBS[i];o.textContent=x;f2.appendChild(o)});
+  f2.value=v2;
+  // f3: Category
+  fillSel('f3',[{v:'gen',l:t('gen')},{v:'obc',l:t('obc')},{v:'sc',l:t('sc')},{v:'st',l:t('st')},{v:'pwd',l:t('pwd')}],sel);
+  // f4: Marks
+  fillSel('f4',[{v:'lt50',l:t('m1')},{v:'50-55',l:t('m2')},{v:'gte55',l:t('m3')}],sel);
+  // f5: PhD
+  fillSel('f5',[{v:'none',l:t('p1')},{v:'ongoing',l:t('p2')},{v:'awarded',l:t('p3')}],sel);
+  // f6: State
+  const f6=document.getElementById('f6'), v6=f6.value;
+  f6.innerHTML=`<option value="">${sel}</option>`;
+  st.forEach((x,i)=>{const o=document.createElement('option');o.value=STV[i];o.textContent=x;f6.appendChild(o)});
+  f6.value=v6;
+  // f7: Geo
+  fillSel('f7',[{v:'home',l:t('g1')},{v:'multi',l:t('g2')},{v:'any',l:t('g3')}],sel);
+  // f8: Inst
+  fillSel('f8',[{v:'central',l:t('i1')},{v:'state',l:t('i2')},{v:'any',l:t('i3')}],sel);
+}
+function fillSel(id,opts,sel){
+  const el=document.getElementById(id), v=el.value;
+  el.innerHTML=`<option value="">${sel}</option>`;
+  opts.forEach(o=>{const op=document.createElement('option');op.value=o.v;op.textContent=o.l;el.appendChild(op)});
+  el.value=v;
+}
+
+// ===== LANGUAGE TOGGLE =====
+function tL(){
+  L=L==='en'?'hi':'en';
+  document.getElementById('lb').textContent=t('lb');
+  document.querySelectorAll('[data-t]').forEach(el=>{
+    const k=el.getAttribute('data-t');
+    if(TX[L][k]){if(k==='hdr')el.innerHTML=TX[L][k];else el.textContent=TX[L][k]}
   });
-  document.getElementById('lb').textContent = t('lb');
   buildSelects();
-  // Re-render vacancies if visible
-  if (document.getElementById('R').style.display !== 'none') rV();
+  if(document.getElementById('R').style.display!=='none')rV();
 }
 
-// --- BUILD SELECTS ---
-function buildSelects() {
-  const subs = L === 'en' ? SUBS_EN : SUBS_HI;
-  const states = L === 'en' ? STATES_EN : STATES_HI;
-  const s1 = document.getElementById('uS'), v1 = s1.value;
-  const s2 = document.getElementById('uSt'), v2 = s2.value;
-  const s3 = document.getElementById('uC'), v3 = s3.value;
-  const s4 = document.getElementById('uG'), v4 = s4.value;
+// ===== PHONE =====
+document.getElementById('mP').addEventListener('input',function(){this.value=this.value.replace(/\D/g,'').slice(0,10)});
+function tPh(){const i=document.getElementById('mP');const isP=i.type==='password';i.type=isP?'tel':'password';document.getElementById('pTg').textContent=isP?t('hid'):t('shw')}
 
-  s1.innerHTML = `<option value="">${t('sel')}</option>`;
-  subs.forEach((s, i) => { const o = document.createElement('option'); o.value = SUBS_EN[i]; o.textContent = s; s1.appendChild(o); });
-  s1.value = v1;
+// ===== RESET =====
+function rA(){['f1','f2','f3','f4','f5','f6','f7','f8'].forEach(i=>document.getElementById(i).value='');document.getElementById('R').style.display='none'}
 
-  s2.innerHTML = `<option value="">${t('sel')}</option>`;
-  states.forEach((s, i) => { const o = document.createElement('option'); o.value = STATES_V[i]; o.textContent = s; s2.appendChild(o); });
-  s2.value = v2;
-
-  s3.innerHTML = `<option value="">${t('sel')}</option>`;
-  ['gen','obc','sc','st','pwd'].forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = t(k); s3.appendChild(o); });
-  s3.value = v3;
-
-  s4.innerHTML = `<option value="">${t('sel')}</option>`;
-  ['home','any'].forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = t(k); s4.appendChild(o); });
-  s4.value = v4;
+// ===== MODAL =====
+function openModal(){
+  for(let i=1;i<=8;i++){if(!document.getElementById('f'+i).value){alert(t('fillAll'));return}}
+  document.getElementById('modal').classList.add('show');
+  document.getElementById('mN').value='';document.getElementById('mP').value='';document.getElementById('mP').type='password';
+  document.getElementById('pEr').style.display='none';
+  setTimeout(()=>document.getElementById('mN').focus(),100);
 }
-buildSelects();
+function closeModal(){document.getElementById('modal').classList.remove('show')}
 
-// --- PHONE MASKING ---
-document.getElementById('uP').addEventListener('input', function() {
-  this.value = this.value.replace(/\D/g, '').slice(0, 10);
-  if (this.value.length === 10) {
-    pMask = true; this.type = 'password';
-    document.getElementById('pTg').textContent = t('shw');
-  }
-});
-function tPh() {
-  const inp = document.getElementById('uP');
-  pMask = !pMask;
-  inp.type = pMask ? 'password' : 'tel';
-  document.getElementById('pTg').textContent = pMask ? t('shw') : t('hid');
-}
+// ===== SUBMIT =====
+async function submit(){
+  const nm=document.getElementById('mN').value.trim();
+  const ph=document.getElementById('mP').value.trim();
+  document.getElementById('pEr').style.display='none';
+  if(!nm||nm.length<2){alert(t('nameErr'));return}
+  if(!/^[6-9]\d{9}$/.test(ph)){document.getElementById('pEr').style.display='block';return}
 
-// --- RESET ---
-function rA() {
-  ['uN','uP','uS','uC','uSt','uG'].forEach(i => document.getElementById(i).value = '');
-  document.getElementById('uP').type = 'tel'; pMask = false;
-  document.getElementById('R').style.display = 'none';
-  document.getElementById('pEr').style.display = 'none';
-}
-
-// --- MAIN: Show Vacancies (with lead capture) ---
-async function go() {
-  const nm = document.getElementById('uN').value.trim();
-  const ph = document.getElementById('uP').value.trim();
-  document.getElementById('pEr').style.display = 'none';
-
-  if (!nm || nm.length < 2) { alert(t('nameErr')); return; }
-  if (!/^[6-9]\d{9}$/.test(ph)) { document.getElementById('pEr').style.display = 'block'; return; }
-  for (const f of ['uS','uC','uSt','uG']) { if (!document.getElementById(f).value) { alert(t('fillAll')); return; } }
-
-  // Mask phone
-  pMask = true; document.getElementById('uP').type = 'password';
-  document.getElementById('pTg').textContent = t('shw');
-
-  // Save lead to Supabase
-  try {
-    await fetch(SB_U + '/rest/v1/ap_leads', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'apikey': SB_K, 'Authorization': 'Bearer ' + SB_K, 'Prefer': 'return=minimal' },
-      body: JSON.stringify({
-        name: nm, phone: ph,
-        subject: document.getElementById('uS').value,
-        category: document.getElementById('uC').value,
-        preferred_state: document.getElementById('uSt').value,
-        vacancy_clicked: 'profile_search'
+  // Save to Supabase
+  try{
+    await fetch(SB_U+'/rest/v1/ap_leads',{method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SB_K,'Authorization':'Bearer '+SB_K,'Prefer':'return=minimal'},
+      body:JSON.stringify({
+        name:nm, phone:ph,
+        net_status:document.getElementById('f1').value,
+        subject:document.getElementById('f2').value,
+        category:document.getElementById('f3').value,
+        masters_marks:document.getElementById('f4').value,
+        phd_status:document.getElementById('f5').value,
+        home_state:document.getElementById('f6').value,
+        geography:document.getElementById('f7').value,
+        institution_type:document.getElementById('f8').value
       })
     });
-  } catch(e) { console.log('Lead save:', e); }
+  }catch(e){console.log('Lead save:',e)}
 
-  fl = 'all';
-  document.getElementById('R').style.display = '';
+  closeModal();
+  fl='all';
+  document.getElementById('R').style.display='';
   rV();
-  document.getElementById('R').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('R').scrollIntoView({behavior:'smooth'});
 }
 
-// --- RENDER VACANCIES ---
-function sF(f) { fl = f; rV(); }
-function tE(id) { document.getElementById('x' + id).classList.toggle('open'); }
+// ===== RENDER VACANCIES =====
+function sF(f){fl=f;rV()}
+function tE(id){document.getElementById('x'+id).classList.toggle('open')}
 
-function rV() {
-  const stVal = document.getElementById('uSt').value;
-  const geo = document.getElementById('uG').value;
-  let ls = VAC;
-  if (geo === 'home' && stVal !== 'ALL') ls = ls.filter(v => v.st === stVal || v.st === 'ALL');
-  if (fl !== 'all') ls = ls.filter(v => v.tp === fl);
+function rV(){
+  const stV=document.getElementById('f6').value;
+  const geo=document.getElementById('f7').value;
+  let ls=VAC;
+  if(geo==='home'&&stV!=='ALL')ls=ls.filter(v=>v.st===stV||v.st==='ALL');
+  if(fl!=='all')ls=ls.filter(v=>v.tp===fl);
 
-  let h = `<div class="chips">
+  let h=`<div class="chips">
     <div class="chip ${fl==='all'?'on':''}" onclick="sF('all')">${t('all')}</div>
     <div class="chip ${fl==='live'?'on':''}" onclick="sF('live')">${t('active')}</div>
     <div class="chip ${fl==='upcoming'?'on':''}" onclick="sF('upcoming')">${t('upcoming')}</div>
     <div class="chip ${fl==='expected'?'on':''}" onclick="sF('expected')">${t('expected')}</div>
   </div>`;
 
-  if (!ls.length) { h += `<div class="nm">${t('noMatch')}</div>`; }
-  else ls.forEach(v => {
-    const orgTxt = typeof v.org === 'string' ? v.org : v.org[L];
-    const caClass = v.ca === 'open' ? 'apply-open' : v.ca === 'closed' ? 'apply-closed' : 'apply-soon';
-    const caText = v.ca === 'open' ? t('apply_open') : v.ca === 'closed' ? t('apply_closed') : t('apply_soon');
-    h += `<div class="vc"><div class="vc-m" onclick="tE(${v.id})">
+  if(!ls.length){h+=`<div class="nm">${t('noMatch')}</div>`}
+  else ls.forEach(v=>{
+    const org=typeof v.org==='string'?v.org:v.org[L];
+    const caC=v.ca==='open'?'as-o':v.ca==='closed'?'as-c':'as-s';
+    const caT=v.ca==='open'?t('ao'):v.ca==='closed'?t('ac'):t('as');
+    h+=`<div class="vc"><div class="vc-m" onclick="tE(${v.id})">
       <div class="vc-st">${v.sn[L]}</div>
-      <div class="vc-top"><div><div class="vc-nm">${v.nm[L]}</div><div class="vc-org">${orgTxt}</div></div>
-      <span class="badge ${v.tp}">${t(v.tp === 'live' ? 'ACTIVE' : v.tp === 'upcoming' ? 'UPCOMING' : 'EXPECTED')}</span></div>
-      <div class="vc-r">${v.p > 0 ? `<span><strong>${t('posts')}:</strong> ${v.p.toLocaleString()}</span>` : ''}<span class="vc-sal">💰 <strong>${t('salary')}:</strong> ${v.sal}</span></div>
+      <div class="vc-top"><div><div class="vc-nm">${v.nm[L]}</div><div class="vc-org">${org}</div></div><span class="badge ${v.tp}">${t(v.tp==='live'?'ACTIVE':v.tp==='upcoming'?'UPCOMING':'EXPECTED')}</span></div>
+      <div class="vc-r">${v.p>0?`<span><strong>${t('posts')}:</strong> ${v.p.toLocaleString()}</span>`:''}<span class="vc-sal">💰 ${v.sal}</span></div>
       <div class="vc-r"><span><strong>${t('timeline')}:</strong> ${v.tl[L]}</span></div>
-      <div class="vc-apply-status ${caClass}">${caText}</div>
+      <div class="as ${caC}">${caT}</div>
       <div class="ea">${t('expand')}</div>
-    </div>
-    <div class="vc-x" id="x${v.id}">${v.d[L]}
-      <div class="vc-btns"><a class="vc-lk" href="${v.lk}" target="_blank">${t('official')}</a></div>
-    </div></div>`;
+    </div><div class="vc-x" id="x${v.id}">${v.d[L]}<div class="vc-btns"><a class="vc-lk" href="${v.lk}" target="_blank">${t('official')}</a></div></div></div>`;
   });
-
-  document.getElementById('VB').innerHTML = h;
+  document.getElementById('VB').innerHTML=h;
 }
 
-// --- AI PLAN ---
-async function gP() {
-  const sub = document.getElementById('uS').value;
-  const cat = document.getElementById('uC').value;
-  const st = document.getElementById('uSt').value;
-  const stName = STATES_EN[STATES_V.indexOf(st)] || st;
-  const btn = document.getElementById('aB');
-  btn.disabled = true; btn.textContent = t('gen_txt');
-  document.getElementById('aR').innerHTML = `<div style="text-align:center;padding:16px;color:var(--t2)">${t('ai_wait')}</div>`;
-
-  const prompt = `You are an expert Indian academic career advisor. Create a brief, actionable plan for:
-- UGC NET qualified in: ${sub}
-- Category: ${cat}
-- Target state: ${stName}
+// ===== AI PLAN =====
+async function gP(){
+  const sub=document.getElementById('f2').value,cat=document.getElementById('f3').value,st=document.getElementById('f6').value;
+  const stN=STE[STV.indexOf(st)]||st;
+  const btn=document.getElementById('aB');btn.disabled=true;btn.textContent=t('gen_txt');
+  document.getElementById('aR').innerHTML=`<div style="text-align:center;padding:16px;color:var(--t2)">${t('ai_wait')}</div>`;
+  const prompt=`You are an expert Indian academic career advisor. Create a brief plan for:
+- UGC NET qualified in: ${sub} | Category: ${cat} | Target: ${stN}
 - Goal: Get Assistant Professor job
-
-Give:
-1. TOP 3 specific vacancies to target now (org name + state + posts if known)
-2. 4-week action plan
-3. Documents checklist (5 items)
-4. 3 websites to check every Monday
-5. One insider tip
-
-Under 250 words. Bullet points. Specific to their subject and state.`;
-
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
-    });
-    const data = await res.json();
-    const text = data.content?.map(i => i.text || '').join('\n') || t('ai_fail');
-    document.getElementById('aR').innerHTML = `<div class="ai-res">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`;
-  } catch(e) {
-    document.getElementById('aR').innerHTML = `<div class="ai-res">${t('ai_fail')}<br><br>Your profile: ${sub} | ${cat} | ${stName}</div>`;
-  }
-  btn.disabled = false; btn.textContent = t('ai3');
+Give: 1) TOP 3 vacancies to target now 2) 4-week action plan 3) 5 documents to keep ready 4) 3 websites to check weekly 5) One tip
+Under 250 words. Bullet points. Be specific.`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    const text=data.content?.map(i=>i.text||'').join('\n')||t('ai_fail');
+    document.getElementById('aR').innerHTML=`<div class="ai-res">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`;
+  }catch(e){document.getElementById('aR').innerHTML=`<div class="ai-res">${t('ai_fail')}</div>`}
+  btn.disabled=false;btn.textContent=t('ai3');
 }
+
+// ===== INIT =====
+buildSelects();
 </script>
 </body>
 </html>
